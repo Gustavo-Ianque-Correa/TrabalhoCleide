@@ -539,12 +539,33 @@ window.onload = function() {
         let enderecoEntrega = {
             casa, numero, cep, cidade, estado, pais
         };
-        if (!enderecoEntrega.casa || !enderecoEntrega.numero || !enderecoEntrega.cep || !enderecoEntrega.cidade || !enderecoEntrega.estado || !enderecoEntrega.pais) {
-            document.getElementById('inputLocalizacaoEntrega').classList.add('is-invalid');
-            document.getElementById('inputLocalizacaoEntrega').focus();
+        let camposEndereco = [
+            { id: 'inputCasa', valor: enderecoEntrega.casa },
+            { id: 'inputNumero', valor: enderecoEntrega.numero },
+            { id: 'inputCep', valor: enderecoEntrega.cep },
+            { id: 'inputCidade', valor: enderecoEntrega.cidade },
+            { id: 'inputEstado', valor: enderecoEntrega.estado },
+            { id: 'inputPais', valor: enderecoEntrega.pais }
+        ];
+        let algumInvalido = false;
+        camposEndereco.forEach(campo => {
+            let el = document.getElementById(campo.id);
+            if (el) {
+                if (!campo.valor) {
+                    el.classList.add('is-invalid');
+                    algumInvalido = true;
+                } else {
+                    el.classList.remove('is-invalid');
+                }
+            }
+        });
+        if (algumInvalido) {
+            let primeiro = camposEndereco.find(campo => !campo.valor);
+            if (primeiro) {
+                let el = document.getElementById(primeiro.id);
+                if (el) el.focus();
+            }
             return;
-        } else {
-            document.getElementById('inputLocalizacaoEntrega').classList.remove('is-invalid');
         }
         if (opcao === 'pagamentoPix') msg = 'Pagamento via Pix confirmado! Obrigado pela compra.';
         else if (opcao === 'pagamentoCartao') {
