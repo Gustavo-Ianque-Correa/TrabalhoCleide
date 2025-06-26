@@ -126,7 +126,7 @@ function renderizarProdutos(lista) {
     }
     lista.forEach(produto => {
         let card = document.createElement('div');
-        card.className = 'col-12 col-sm-6 col-md-4 col-lg-3 mb-4';
+        card.className = 'col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex flex-column align-items-stretch';
         let imagem = produto.imagem ? produto.imagem : 'https://via.placeholder.com/220x180?text=Produto';
         let emPromocao = produto.promocao && produto.promocao > 0 && produto.promocao < produto.valor;
         card.innerHTML = `
@@ -145,9 +145,14 @@ function renderizarProdutos(lista) {
                     </div>
                 </div>
             </a>
-            <button class="btn btn-warning btn-block mt-2" onclick="adicionarAoCarrinho(${produto.id})"><span class="fa fa-cart-plus mr-1"></span>Adicionar ao Carrinho</button>
         `;
         container.appendChild(card);
+        // Botão fora do card
+        let btn = document.createElement('button');
+        btn.className = 'btn btn-warning btn-block mt-2';
+        btn.innerHTML = '<span class="fa fa-cart-plus mr-1"></span>Adicionar ao Carrinho';
+        btn.onclick = function() { adicionarAoCarrinho(produto.id); };
+        card.appendChild(btn);
     });
 }
 
