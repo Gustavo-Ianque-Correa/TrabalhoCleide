@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Cadastro | Bazaar+</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: linear-gradient(120deg, #f7ca00 0%, #f90 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 80px;
+            overflow-x: hidden;
+        }
+        .decor-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at 80% 10%, #fff7c2 0%, #f7ca00 30%, transparent 70%),
+                        radial-gradient(circle at 10% 90%, #fff7c2 0%, #f90 30%, transparent 70%);
+            opacity: 0.25;
+        }
+        .auth-card {
+            background: #fff;
+            border-radius: 22px;
+            box-shadow: 0 8px 40px 0 rgba(35,47,62,0.18);
+            padding: 1.2rem 0.7rem 1.2rem 0.7rem;
+            max-width: 410px;
+            width: 100%;
+            margin: 1.2rem auto;
+            position: relative;
+            z-index: 1;
+            flex: 1 0 auto;
+        }
+        .nav-tabs {
+            border-bottom: 2px solid #f7ca00;
+        }
+        .nav-tabs .nav-link.active {
+            background: #f7ca00;
+            color: #232f3e;
+            font-weight: 800;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 2px 8px #f7ca0033;
+            border: none;
+        }
+        .nav-tabs .nav-link {
+            color: #232f3e;
+            font-weight: 600;
+            border: none;
+            transition: background 0.2s;
+        }
+        .form-group, .form-row {
+            margin-bottom: 0.7rem;
+        }
+        .form-control {
+            background: #fcfcfc;
+            border-radius: 7px;
+            border: 1.2px solid #e0e0e0;
+            font-size: 1.01rem;
+            padding: 0.38rem 0.7rem;
+            min-height: 36px;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .form-group.col-md-6, .form-group.col-md-4 {
+            flex: 1 1 0;
+            min-width: 0;
+            margin-bottom: 0;
+        }
+        .form-group.col-md-6 {
+            max-width: 48%;
+        }
+        .form-group.col-md-4 {
+            max-width: 32%;
+        }
+        .btn-auth {
+            background: linear-gradient(90deg, #f7ca00 0%, #f90 100%);
+            color: #232f3e;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            padding: 0.7rem 2rem;
+            margin-top: 1.2rem;
+            box-shadow: 0 2px 12px #f7ca0033;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+        }
+        .btn-auth:hover {
+            background: linear-gradient(90deg, #f90 0%, #f7ca00 100%);
+            color: #232f3e;
+            box-shadow: 0 4px 18px #f7ca0033;
+            transform: translateY(-2px) scale(1.03);
+        }
+        .auth-logo {
+            width: 70px;
+            height: 70px;
+            background: #fff;
+            border-radius: 16px;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 2px 12px #f7ca0033;
+        }
+        .tab-content {
+            margin-top: 1.7rem;
+        }
+        .invalid-feedback {
+            font-size: 0.98em;
+            color: #d7263d;
+        }
+        @media (max-width: 600px) {
+            .auth-card {
+                padding: 0.7rem 0.2rem 0.7rem 0.2rem;
+                max-width: 99vw;
+            }
+            .form-row {
+                flex-direction: column;
+                gap: 0.2rem;
+            }
+            .form-group.col-md-6, .form-group.col-md-4 {
+                max-width: 100%;
+                flex: 0 0 100%;
+            }
+        }
+        .footer-animado {
+            background: #f5f6fa !important;
+            color: #232f3e !important;
+            box-shadow: 0 -2px 16px #232f3e11;
+            padding: 22px 0 12px 0;
+            margin-top: auto;
+            border-top: 1px solid #ececec;
+        }
+        .footer-animado .footer-content {
+            position: relative;
+            z-index: 2;
+        }
+        .footer-animado .footer-link {
+            font-size: 1.01rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            opacity: 0.92;
+            transition: color 0.3s;
+        }
+        .footer-animado .footer-link:hover {
+            color: #f90;
+            opacity: 1;
+        }
+        .footer-animado .footer-social img {
+            transition: filter 0.3s;
+            filter: invert(0.4);
+        }
+        .footer-animado .footer-social:hover img {
+            filter: invert(0.2) brightness(1.2);
+        }
+        .footer-animado .footer-wave {
+            position: absolute;
+            top: -10px;
+            left: 0;
+            width: 100%;
+            height: 22px;
+            background: url('data:image/svg+xml;utf8,<svg width="100%25" height="22" viewBox="0 0 1200 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0C150 22 350 22 600 0C850 -22 1050 -22 1200 0V22H0V0Z" fill="%23f5f6fa"/></svg>') repeat-x;
+            z-index: 1;
+            animation: waveMove 14s linear infinite;
+            opacity: 0.7;
+        }
+        @keyframes waveMove {
+            0% { background-position-x: 0; }
+            100% { background-position-x: 1200px; }
+        }
+        @keyframes logoPulse {
+            0% { box-shadow: 0 0 0 0 #f7ca0022; }
+            100% { box-shadow: 0 0 8px 4px #f7ca0022; }
+        }
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(16px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="decor-bg"></div>
+    <div class="auth-card mx-auto">
+        <div class="text-center">
+            <img src="BazaarPlus_logo_website.png" class="auth-logo" alt="Logo Bazaar+">
+            <h3 class="mb-3" style="color:#232f3e;font-weight:700;">Bazaar+ Acesso</h3>
+        </div>
+        <ul class="nav nav-tabs" id="authTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="login-tab" data-toggle="tab" href="#login" role="tab" aria-controls="login" aria-selected="true">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="cadastro-tab" data-toggle="tab" href="#cadastro" role="tab" aria-controls="cadastro" aria-selected="false">Cadastro</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="authTabsContent">
+            <!-- Login -->
+            <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+                <form id="formLogin" novalidate>
+                    <div class="form-group">
+                        <label for="loginEmail">E-mail</label>
+                        <input type="email" class="form-control" id="loginEmail" required>
+                        <div class="invalid-feedback">Informe um e-mail válido.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginSenha">Senha</label>
+                        <input type="password" class="form-control" id="loginSenha" required minlength="4">
+                        <div class="invalid-feedback">Informe a senha.</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Usuário</label><br>
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input type="radio" id="loginTipoCliente" name="loginTipo" class="custom-control-input" value="cliente" checked>
+                            <label class="custom-control-label" for="loginTipoCliente">Cliente</label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input type="radio" id="loginTipoGerente" name="loginTipo" class="custom-control-input" value="gerente">
+                            <label class="custom-control-label" for="loginTipoGerente">Gerente</label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="loginCodigoGerenteArea" style="display:none;">
+                        <label for="loginCodigoGerente">Código do Gerente</label>
+                        <input type="text" class="form-control" id="loginCodigoGerente" autocomplete="off">
+                        <div class="invalid-feedback">Informe o código correto do gerente.</div>
+                    </div>
+                    <button type="submit" class="btn btn-auth btn-block">Entrar</button>
+                    <div class="text-danger mt-2" id="loginErro"></div>
+                </form>
+            </div>
+            <!-- Cadastro -->
+            <div class="tab-pane fade" id="cadastro" role="tabpanel" aria-labelledby="cadastro-tab">
+                <form id="formCadastro" novalidate>
+                    <div class="form-group">
+                        <label for="cadastroNome">Nome</label>
+                        <input type="text" class="form-control" id="cadastroNome" required>
+                        <div class="invalid-feedback">Informe seu nome.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cadastroTelefone">Telefone</label>
+                        <input type="text" class="form-control" id="cadastroTelefone" required pattern="\(\d{2}\) \d{4,5}-\d{4}">
+                        <div class="invalid-feedback">Informe um telefone válido.</div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="cadastroCep">CEP</label>
+                            <input type="text" class="form-control" id="cadastroCep" required pattern="\d{5}-\d{3}">
+                            <div class="invalid-feedback">Informe um CEP válido.</div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="cadastroCasa">Casa/Apto</label>
+                            <input type="text" class="form-control" id="cadastroCasa" required>
+                            <div class="invalid-feedback">Informe o tipo de residência.</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="cadastroNumero">Número</label>
+                            <input type="text" class="form-control" id="cadastroNumero" required>
+                            <div class="invalid-feedback">Informe o número.</div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="cadastroCidade">Cidade</label>
+                            <input type="text" class="form-control" id="cadastroCidade" required>
+                            <div class="invalid-feedback">Informe a cidade.</div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="cadastroEstado">Estado</label>
+                            <input type="text" class="form-control" id="cadastroEstado" required>
+                            <div class="invalid-feedback">Informe o estado.</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cadastroPais">País</label>
+                        <input type="text" class="form-control" id="cadastroPais" required>
+                        <div class="invalid-feedback">Informe o país.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cadastroEmail">E-mail</label>
+                        <input type="email" class="form-control" id="cadastroEmail" required>
+                        <div class="invalid-feedback">Informe um e-mail válido.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cadastroSenha">Senha</label>
+                        <input type="password" class="form-control" id="cadastroSenha" required minlength="4">
+                        <div class="invalid-feedback">A senha deve ter pelo menos 4 caracteres.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cadastroSenha2">Confirme a Senha</label>
+                        <input type="password" class="form-control" id="cadastroSenha2" required minlength="4">
+                        <div class="invalid-feedback">As senhas não coincidem.</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Usuário</label><br>
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input type="radio" id="cadastroTipoCliente" name="cadastroTipo" class="custom-control-input" value="cliente" checked>
+                            <label class="custom-control-label" for="cadastroTipoCliente">Cliente</label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input type="radio" id="cadastroTipoGerente" name="cadastroTipo" class="custom-control-input" value="gerente">
+                            <label class="custom-control-label" for="cadastroTipoGerente">Gerente</label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="cadastroCodigoGerenteArea" style="display:none;">
+                        <label for="cadastroCodigoGerente">Código do Gerente</label>
+                        <input type="text" class="form-control" id="cadastroCodigoGerente" autocomplete="off">
+                        <div class="invalid-feedback">Informe o código correto do gerente.</div>
+                    </div>
+                    <button type="submit" class="btn btn-auth btn-block">Cadastrar</button>
+                    <div class="text-danger mt-2" id="cadastroErro"></div>
+                    <div class="text-success mt-2" id="cadastroSucesso"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer class="footer-animado">
+        <div class="footer-wave"></div>
+        <div class="footer-content container">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center text-md-left mb-2 mb-md-0">
+                    <img src="BazaarPlus_logo_website.png" alt="Bazaar+" width="44" style="border-radius:8px;box-shadow:0 2px 8px #0002;">
+                    <span class="ml-2 font-weight-bold" style="font-size:1.15rem;letter-spacing:1px;">Bazaar+</span>
+                </div>
+                <div class="col-md-4 text-center mb-2 mb-md-0">
+                    <span class="footer-link" style="margin:0 10px;">Sistema de Vendas</span>
+                    <span class="footer-link" style="margin:0 10px;">© 2024</span>
+                    <span class="footer-link" style="margin:0 10px;">Feito com <span style='color:#f90;font-size:1.1em;'>&#10084;</span></span>
+                </div>
+                <div class="col-md-4 text-center text-md-right">
+                    <a href="#" class="footer-social">
+                        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" width="24" style="filter:invert(0.4);margin-right:8px;">
+                    </a>
+                    <a href="#" class="footer-social">
+                        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" width="24" style="filter:invert(0.4);margin-right:8px;">
+                    </a>
+                    <a href="#" class="footer-social">
+                        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp" width="24" style="filter:invert(0.4);">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html> 

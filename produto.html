@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Produto | Bazaar+ Loja</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: #e3e6e6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            flex: 1 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .navbar {
+            background: #232f3e !important;
+            box-shadow: 0 2px 12px rgba(35,47,62,0.10);
+        }
+        .navbar-brand, .navbar-dark .navbar-nav .nav-link {
+            color: #fff !important;
+        }
+        .navbar-brand img {
+            background: #fff;
+            border-radius: 6px;
+            padding: 2px;
+        }
+        .breadcrumb {
+            background: none;
+            padding-left: 0;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .produto-detalhe-area {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(35,47,62,0.13);
+            margin-top: 2rem;
+            padding: 2rem 1.5rem;
+        }
+        .produto-img-main {
+            width: 100%;
+            max-width: 340px;
+            height: 320px;
+            object-fit: contain;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+        .produto-img-thumbs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .produto-img-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #fff;
+            transition: border 0.2s;
+        }
+        .produto-img-thumb.selected, .produto-img-thumb:hover {
+            border: 2px solid #f90;
+        }
+        .produto-titulo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #232f3e;
+        }
+        .produto-preco {
+            color: #ff6600;
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin: 1rem 0 0.5rem 0;
+        }
+        .produto-preco-antigo {
+            color: #888;
+            font-size: 1.1rem;
+            text-decoration: line-through;
+        }
+        .produto-tipo {
+            font-size: 1.1rem;
+            color: #555;
+        }
+        .produto-fornecedor {
+            font-size: 1rem;
+            color: #232f3e;
+            background: #f7ca00;
+            border-radius: 6px;
+            padding: 0.2rem 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        .produto-estoque {
+            font-size: 1rem;
+            color: #388e3c;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .badge-desconto {
+            background: #fff;
+            color: #ff6600;
+            border: 1.5px solid #ff6600;
+            font-weight: 700;
+            border-radius: 8px;
+            font-size: 1rem;
+            padding: 0.2rem 0.7rem;
+            margin-left: 0.5rem;
+            box-shadow: 0 2px 8px #ff660033;
+        }
+        .btn-comprar {
+            background: linear-gradient(90deg, #ff6600 0%, #f7ca00 100%);
+            color: #232f3e;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 0.7rem 2.5rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 2px 8px #ff660033;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .btn-comprar:hover {
+            background: linear-gradient(90deg, #f7ca00 0%, #ff6600 100%);
+            color: #232f3e;
+            box-shadow: 0 4px 16px #ff660033;
+        }
+        .produto-codigo {
+            color: #ff6600;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .produto-descricao {
+            color: #444;
+            font-size: 1.1rem;
+            margin-top: 1.2rem;
+        }
+        .produto-info-extra {
+            font-size: 1rem;
+            color: #888;
+            margin-bottom: 0.7rem;
+        }
+        @media (max-width: 991px) {
+            .produto-titulo {
+                font-size: 1.3rem;
+            }
+            .produto-preco {
+                font-size: 1.3rem;
+            }
+            .produto-img-main {
+                height: 180px;
+            }
+        }
+        @media (max-width: 768px) {
+            .produto-detalhe-area {
+                padding: 1rem 0.5rem;
+            }
+            .produto-img-main {
+                max-width: 100%;
+                height: 120px;
+            }
+            .produto-img-thumbs {
+                flex-direction: row;
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+        }
+        .footer-animado {
+            background: #f5f6fa !important;
+            color: #232f3e !important;
+            box-shadow: 0 -2px 16px #232f3e11;
+            padding: 22px 0 12px 0;
+            margin-top: auto;
+            border-top: 1px solid #ececec;
+        }
+        .footer-animado .footer-link {
+            font-size: 1.01rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            opacity: 0.92;
+            transition: color 0.3s;
+        }
+        .footer-animado .footer-link:hover {
+            color: #f90;
+            opacity: 1;
+        }
+        .footer-animado .footer-social img {
+            transition: filter 0.3s;
+            filter: invert(0.4);
+        }
+        .footer-animado .footer-social:hover img {
+            filter: invert(0.2) brightness(1.2);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="loja.html">
+            <img src="BazaarPlus_logo_website.png" width="40" height="40" class="d-inline-block align-top" alt=""> Bazaar+ Loja
+        </a>
+    </nav>
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mt-3">
+            <ol class="breadcrumb" id="breadcrumbProduto">
+                <!-- Breadcrumb será inserido via JS -->
+            </ol>
+        </nav>
+        <div class="produto-detalhe-area" id="produtoDetalhe">
+            <!-- Detalhes do produto serão inseridos aqui via JS -->
+        </div>
+    </div>
+    <footer class="footer-animado" style="background:#f5f6fa;color:#232f3e;box-shadow:0 -2px 16px #232f3e11;">
+        <div class="footer-content container">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center text-md-left mb-2 mb-md-0">
+                    <img src="BazaarPlus_logo_website.png" alt="Bazaar+" width="44" style="border-radius:8px;box-shadow:0 2px 8px #0002;">
+                    <span class="ml-2 font-weight-bold" style="font-size:1.15rem;letter-spacing:1px;">Bazaar+</span>
+                </div>
+                <div class="col-md-4 text-center mb-2 mb-md-0">
+                    <span class="footer-link" style="margin:0 10px;">Sistema de Vendas</span>
+                    <span class="footer-link" style="margin:0 10px;">© 2024</span>
+                    <span class="footer-link" style="margin:0 10px;">Feito com <span style='color:#f90;font-size:1.1em;'>&#10084;</span></span>
+                </div>
+                <div class="col-md-4 text-center text-md-right">
+                    <a href="#" class="footer-social">
+                        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" width="24" style="filter:invert(0.4);margin-right:8px;">
+                    </a>
+                    <a href="#" class="footer-social">
+                        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" width="24" style="filter:invert(0.4);margin-right:8px;">
+                    </a>
+                    <a href="#" class="footer-social">
+                        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp" width="24" style="filter:invert(0.4);">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="produto.js"></script>
+</body>
+</html> 

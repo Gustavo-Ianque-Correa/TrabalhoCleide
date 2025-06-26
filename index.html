@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bazaar+ - Sistema de Vendas</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#232f3e">
+    <style>
+        body {
+            background: #f5f6fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 80px;
+        }
+        .navbar {
+            background: #232f3e !important;
+            box-shadow: 0 2px 8px rgba(35,47,62,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar-brand, .navbar-dark .navbar-nav .nav-link {
+            color: #fff !important;
+        }
+        .navbar-brand img {
+            background: #fff;
+            border-radius: 6px;
+            padding: 2px;
+        }
+        .main-content {
+            flex: 1 0 auto;
+        }
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(35,47,62,0.07);
+            border: none;
+        }
+        .card-header {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #f7ca00 0%, #f90 100%);
+            color: #232f3e !important;
+            border-radius: 12px 12px 0 0;
+            border: none;
+        }
+        .btn-success, .btn-warning, .btn-danger {
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .btn-success {
+            background: linear-gradient(90deg, #34d058 0%, #28a745 100%);
+        }
+        .btn-success:hover {
+            background: linear-gradient(90deg, #28a745 0%, #34d058 100%);
+            box-shadow: 0 2px 8px rgba(40,167,69,0.12);
+        }
+        .btn-warning {
+            background: linear-gradient(90deg, #f7ca00 0%, #f90 100%);
+            color: #232f3e;
+        }
+        .btn-warning:hover {
+            background: linear-gradient(90deg, #f90 0%, #f7ca00 100%);
+            color: #232f3e;
+            box-shadow: 0 2px 8px rgba(247,202,0,0.12);
+        }
+        .btn-danger {
+            background: linear-gradient(90deg, #ff5858 0%, #d7263d 100%);
+        }
+        .btn-danger:hover {
+            background: linear-gradient(90deg, #d7263d 0%, #ff5858 100%);
+            box-shadow: 0 2px 8px rgba(215,38,61,0.12);
+        }
+        .form-control:focus {
+            border-color: #f90;
+            box-shadow: 0 0 0 2px #f7ca0033;
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #232f3e;
+        }
+        .input-group-text {
+            background: #f7ca00;
+            border: none;
+            color: #232f3e;
+            font-weight: bold;
+        }
+        .table {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .table thead {
+            background: linear-gradient(90deg, #232f3e 0%, #f7ca00 100%);
+            color: #fff;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9fafb;
+        }
+        .invalid-feedback {
+            font-size: 0.95em;
+        }
+        .modal-content {
+            border-radius: 12px;
+        }
+        .modal-header {
+            background: linear-gradient(90deg, #f7ca00 0%, #f90 100%);
+            color: #232f3e;
+            border-radius: 12px 12px 0 0;
+        }
+        .footer-animado {
+            background: #f5f6fa !important;
+            color: #232f3e !important;
+            box-shadow: 0 -2px 16px #232f3e11;
+            padding: 22px 0 12px 0;
+            margin-top: auto;
+            border-top: 1px solid #ececec;
+        }
+        .footer-animado .footer-link {
+            font-size: 1.01rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            opacity: 0.92;
+            transition: color 0.3s;
+        }
+        .footer-animado .footer-link:hover {
+            color: #f90;
+            opacity: 1;
+        }
+        .footer-animado .footer-social img {
+            transition: filter 0.3s;
+            filter: invert(0.4);
+        }
+        .footer-animado .footer-social:hover img {
+            filter: invert(0.2) brightness(1.2);
+        }
+        @keyframes logoPulse {
+            0% { box-shadow: 0 0 0 0 #f7ca0033; }
+            100% { box-shadow: 0 0 16px 8px #f7ca0033; }
+        }
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(24px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+            .card-header {
+                font-size: 1.05rem;
+            }
+            .main-content {
+                padding: 0 2px;
+            }
+        }
+        /* Responsividade para modal de pagamento */
+        #modalPagamento .modal-dialog {
+            max-width: 430px;
+            margin: 1.75rem auto;
+        }
+        #modalPagamento .modal-body {
+            max-height: 65vh;
+            overflow-y: auto;
+            padding-bottom: 0.5rem;
+        }
+        @media (max-width: 575px) {
+            #modalPagamento .modal-dialog {
+                max-width: 98vw;
+                margin: 0.5rem auto;
+            }
+            #modalPagamento .modal-body {
+                max-height: 60vh;
+                padding-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+    // Proteger acesso: só gerente
+    const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+    if (!usuarioLogado || usuarioLogado.tipoUsuario !== 'gerente') {
+        window.location.href = 'loja.html';
+    }
+    </script>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">
+            <img src="BazaarPlus_logo_website.png" width="60" height="60" class="d-inline-block align-top" alt=""> Bazaar+
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="#clientes" onclick="$('.nav-link').removeClass('active');$('#tab-cliente').addClass('active');$('.tab-pane').removeClass('show active');$('#clientes').addClass('show active');">Clientes</a></li>
+                <li class="nav-item"><a class="nav-link" href="#fornecedores" onclick="$('.nav-link').removeClass('active');$('#tab-fornecedor').addClass('active');$('.tab-pane').removeClass('show active');$('#fornecedores').addClass('show active');">Fornecedores</a></li>
+                <li class="nav-item"><a class="nav-link" href="#produtos" onclick="$('.nav-link').removeClass('active');$('#tab-produto').addClass('active');$('.tab-pane').removeClass('show active');$('#produtos').addClass('show active');">Produtos/Serviços</a></li>
+                <li class="nav-item"><a class="nav-link" href="#itens-vendidos" onclick="$('.nav-link').removeClass('active');$('.tab-pane').removeClass('show active');">Itens Vendidos</a></li>
+                <li class="nav-item ml-3">
+                    <button id="btnIrLoja" class="btn btn-warning font-weight-bold" style="border-radius:22px;padding:0.4rem 1.4rem;font-size:1.08rem;">Ir para Loja</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4 main-content">
+        <!-- Abas de Cadastro -->
+        <ul class="nav nav-tabs mb-3" id="cadastroTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="tab-cliente" data-toggle="tab" href="#clientes" role="tab" aria-controls="clientes" aria-selected="true">Cliente</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tab-fornecedor" data-toggle="tab" href="#fornecedores" role="tab" aria-controls="fornecedores" aria-selected="false">Fornecedor</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tab-categoria" data-toggle="tab" href="#categorias" role="tab" aria-controls="categorias" aria-selected="false">Categoria</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tab-produto" data-toggle="tab" href="#produtos" role="tab" aria-controls="produtos" aria-selected="false">Produto/Serviço</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tab-banner" data-toggle="tab" href="#banner" role="tab" aria-controls="banner" aria-selected="false">Banner Promo</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="cadastroTabsContent">
+            <!-- Cadastro de Cliente -->
+            <div class="card mb-4 tab-pane fade show active" id="clientes" role="tabpanel" aria-labelledby="tab-cliente">
+                <div class="card-header bg-primary text-white">Cadastro de Cliente</div>
+                <div class="card-body">
+                    <form id="formCliente" novalidate>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="clienteNome">Nome *</label>
+                                <input type="text" class="form-control" id="clienteNome" required>
+                                <div class="invalid-feedback">Informe o nome.</div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="clienteTelefone">Telefone *</label>
+                                <input type="text" class="form-control" id="clienteTelefone" required pattern="\(\d{2}\) \d{4,5}-\d{4}">
+                                <div class="invalid-feedback">Informe um telefone válido.</div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="clienteCPF">CPF *</label>
+                                <input type="text" class="form-control" id="clienteCPF" required maxlength="14">
+                                <div class="invalid-feedback">CPF inválido.</div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="clienteCep">CEP *</label>
+                                <input type="text" class="form-control" id="clienteCep" required pattern="\d{5}-\d{3}">
+                                <div class="invalid-feedback">Informe um CEP válido.</div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="clienteCasa">Casa/Apto *</label>
+                                <input type="text" class="form-control" id="clienteCasa" required>
+                                <div class="invalid-feedback">Informe o tipo de residência.</div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-2">
+                                <label for="clienteNumero">Número *</label>
+                                <input type="text" class="form-control" id="clienteNumero" required>
+                                <div class="invalid-feedback">Informe o número.</div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="clienteCidade">Cidade *</label>
+                                <input type="text" class="form-control" id="clienteCidade" required>
+                                <div class="invalid-feedback">Informe a cidade.</div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="clienteEstado">Estado *</label>
+                                <input type="text" class="form-control" id="clienteEstado" required>
+                                <div class="invalid-feedback">Informe o estado.</div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="clientePais">País *</label>
+                                <input type="text" class="form-control" id="clientePais" required>
+                                <div class="invalid-feedback">Informe o país.</div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">Cadastrar Cliente</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Cadastro de Fornecedor -->
+            <div class="card mb-4 tab-pane fade" id="fornecedores" role="tabpanel" aria-labelledby="tab-fornecedor">
+                <div class="card-header bg-primary text-white">Cadastro de Fornecedor</div>
+                <div class="card-body">
+                    <form id="formFornecedor" novalidate>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="fornecedorNome">Nome *</label>
+                                <input type="text" class="form-control" id="fornecedorNome" required>
+                                <div class="invalid-feedback">Informe o nome do fornecedor.</div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">Cadastrar Fornecedor</button>
+                    </form>
+                    <hr>
+                    <h5>Fornecedores Cadastrados</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="tabelaFornecedores">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cadastro de Categoria -->
+            <div class="card mb-4 tab-pane fade" id="categorias" role="tabpanel" aria-labelledby="tab-categoria">
+                <div class="card-header bg-primary text-white">Cadastro de Categoria</div>
+                <div class="card-body">
+                    <form id="formCategoria" novalidate>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="categoriaNome">Nome *</label>
+                                <input type="text" class="form-control" id="categoriaNome" required>
+                                <div class="invalid-feedback">Informe o nome da categoria.</div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">Cadastrar Categoria</button>
+                    </form>
+                    <hr>
+                    <h5>Categorias Cadastradas</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="tabelaCategorias">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cadastro de Produto/Serviço -->
+            <div class="card mb-4 tab-pane fade" id="produtos" role="tabpanel" aria-labelledby="tab-produto">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="card-header bg-warning text-dark">Cadastro de Produto ou Serviço</div>
+                    <div class="text-right pr-3" style="font-size:1.1rem;color:#232f3e;font-weight:600;">Código do Gerente: <span style="color:#d7263d;">GERENTE2025</span></div>
+                </div>
+                <div class="card-body">
+                    <form id="formProduto" novalidate>
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label for="produtoNome">Nome *</label>
+                                <input type="text" class="form-control" id="produtoNome" required>
+                                <div class="invalid-feedback">Informe o nome.</div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="produtoDescricao">Descrição *</label>
+                                <input type="text" class="form-control" id="produtoDescricao" required>
+                                <div class="invalid-feedback">Informe a descrição.</div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="produtoValor">Valor *</label>
+                                <input type="number" class="form-control" id="produtoValor" required min="0" step="0.01">
+                                <div class="invalid-feedback">Informe o valor.</div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="produtoPromocao">Valor Promocional</label>
+                                <input type="number" class="form-control" id="produtoPromocao" min="0" step="0.01" placeholder="Opcional">
+                                <small class="form-text text-muted">Se preenchido, o produto ficará em promoção.</small>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="produtoDesconto">Desconto (%)</label>
+                                <input type="number" class="form-control" id="produtoDesconto" min="0" max="100" step="0.01" placeholder="Opcional">
+                                <small class="form-text text-muted">Se preenchido, o valor promocional será calculado automaticamente.</small>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-2">
+                                <label for="produtoTipo">Tipo *</label>
+                                <select class="form-control" id="produtoTipo" required>
+                                    <option value="">Selecione</option>
+                                    <option value="Produto">Produto</option>
+                                    <option value="Serviço">Serviço</option>
+                                </select>
+                                <div class="invalid-feedback">Selecione o tipo.</div>
+                            </div>
+                            <div class="form-group col-md-1">
+                                <label for="produtoEstoque">Estoque *</label>
+                                <input type="number" class="form-control" id="produtoEstoque" required min="0">
+                                <div class="invalid-feedback">Informe o estoque.</div>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="produtoImagem">Imagem</label>
+                                <input type="file" class="form-control-file" id="produtoImagem" accept="image/*">
+                                <small class="form-text text-muted">Opcional. Apenas imagens.</small>
+                            </div>
+                            <div class="form-group col-md-2 ml-auto text-right">
+                                <label for="produtoFornecedor">Fornecedor *</label>
+                                <select class="form-control" id="produtoFornecedor" required></select>
+                                <div class="invalid-feedback">Selecione o fornecedor.</div>
+                            </div>
+                            <div class="form-group col-md-2 text-right">
+                                <label for="produtoCategoria">Categoria *</label>
+                                <select class="form-control" id="produtoCategoria" required style="min-width:200px;max-width:100%;white-space:normal;">
+                                </select>
+                                <div class="invalid-feedback">Selecione a categoria.</div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">Cadastrar Produto/Serviço</button>
+                    </form>
+                    <hr>
+                    <h5>Produtos/Serviços Cadastrados</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="tabelaProdutos">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Descrição</th>
+                                    <th>Valor</th>
+                                    <th>Tipo</th>
+                                    <th>Estoque</th>
+                                    <th>Fornecedor</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cadastro de Banner -->
+            <div class="card mb-4 tab-pane fade" id="banner" role="tabpanel" aria-labelledby="tab-banner">
+                <div class="card-header bg-warning text-dark">Cadastro de Banner Promocional</div>
+                <div class="card-body">
+                    <!-- Área de exibição e remoção do banner -->
+                    <div id="areaBannerAdmin" style="display:none; margin-bottom: 2rem;">
+                        <div class="d-flex align-items-center flex-wrap mb-2">
+                            <img id="bannerImgAdmin" src="" alt="Banner Promo" style="max-width:180px;max-height:90px;border-radius:8px;box-shadow:0 2px 8px #0001;margin-right:18px;">
+                            <div>
+                                <h5 id="bannerTituloAdmin" class="mb-1"></h5>
+                                <p id="bannerDescricaoAdmin" class="mb-1"></p>
+                                <button class="btn btn-primary btn-sm mt-2 mr-2" id="btnEditarBanner">Editar Banner</button>
+                                <button class="btn btn-danger btn-sm mt-2" onclick="removerBannerAdmin()">Remover Banner</button>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <form id="formBanner" novalidate>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="bannerTituloInput">Título *</label>
+                                <input type="text" class="form-control" id="bannerTituloInput" required>
+                                <div class="invalid-feedback">Informe o título do banner.</div>
+                            </div>
+                            <div class="form-group col-md-5">
+                                <label for="bannerDescricaoInput">Descrição *</label>
+                                <input type="text" class="form-control" id="bannerDescricaoInput" required>
+                                <div class="invalid-feedback">Informe a descrição do banner.</div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="bannerImgInput">Imagem *</label>
+                                <input type="file" class="form-control-file" id="bannerImgInput" accept="image/*" required>
+                                <div class="invalid-feedback">Selecione uma imagem.</div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">Cadastrar Banner</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Itens Vendidos -->
+        <div class="card mb-4" id="itens-vendidos">
+            <div class="card-header bg-info text-white">Itens Vendidos</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped" id="tabelaVendas">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Produto/Serviço</th>
+                                <th>Quantidade</th>
+                                <th>Valor</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Mensagem -->
+    <div class="modal fade" id="modalMensagem" tabindex="-1" role="dialog" aria-labelledby="modalMensagemLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">    
+            <h5 class="modal-title" id="modalMensagemLabel">Mensagem</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="modalMensagemBody"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="app.js"></script>
+    <script id="templateBotaoRemover" type="text/template">
+        <button class="btn btn-sm btn-danger btn-remover-produto" title="Remover"><span>&#128465;</span></button>
+    </script>
+    <script id="templateBotaoEditar" type="text/template">
+        <button class="btn btn-sm btn-primary btn-editar-produto" title="Editar"><span>&#9998;</span></button>
+    </script>
+    <script>
+      // Corrige bug de abas: força Bootstrap a mostrar a aba correta ao clicar
+      $(function () {
+        $('#cadastroTabs a').on('click', function (e) {
+          e.preventDefault();
+          $(this).tab('show');
+        });
+      });
+    </script>
+    <script>
+    // Botão para gerente ir para loja
+    document.addEventListener('DOMContentLoaded', function() {
+        var btn = document.getElementById('btnIrLoja');
+        if(btn) btn.onclick = function(e) {
+            e.preventDefault();
+            window.location.href = 'loja.html';
+        };
+    });
+    </script>
+    <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('service-worker.js');
+      });
+    }
+    </script>
+    <!-- Modal de Edição de Produto -->
+    <div class="modal fade" id="modalEditarProduto" tabindex="-1" role="dialog" aria-labelledby="modalEditarProdutoLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="modalEditarProdutoLabel">Editar Produto/Serviço</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="formEditarProduto" novalidate>
+              <input type="hidden" id="editarProdutoId">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="editarProdutoNome">Nome *</label>
+                  <input type="text" class="form-control" id="editarProdutoNome" required>
+                  <div class="invalid-feedback">Informe o nome.</div>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="editarProdutoDescricao">Descrição *</label>
+                  <input type="text" class="form-control" id="editarProdutoDescricao" required>
+                  <div class="invalid-feedback">Informe a descrição.</div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label for="editarProdutoValor">Valor *</label>
+                  <input type="number" class="form-control" id="editarProdutoValor" required min="0" step="0.01">
+                  <div class="invalid-feedback">Informe o valor.</div>
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="editarProdutoPromocao">Valor Promocional</label>
+                  <input type="number" class="form-control" id="editarProdutoPromocao" min="0" step="0.01" placeholder="Opcional">
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="editarProdutoDesconto">Desconto (%)</label>
+                  <input type="number" class="form-control" id="editarProdutoDesconto" min="0" max="100" step="0.01" placeholder="Opcional">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label for="editarProdutoTipo">Tipo *</label>
+                  <select class="form-control" id="editarProdutoTipo" required>
+                    <option value="">Selecione</option>
+                    <option value="Produto">Produto</option>
+                    <option value="Serviço">Serviço</option>
+                  </select>
+                  <div class="invalid-feedback">Selecione o tipo.</div>
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="editarProdutoEstoque">Estoque *</label>
+                  <input type="number" class="form-control" id="editarProdutoEstoque" required min="0">
+                  <div class="invalid-feedback">Informe o estoque.</div>
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="editarProdutoFornecedor">Fornecedor *</label>
+                  <select class="form-control" id="editarProdutoFornecedor" required></select>
+                  <div class="invalid-feedback">Selecione o fornecedor.</div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="editarProdutoCategoria">Categoria *</label>
+                  <select class="form-control" id="editarProdutoCategoria" required></select>
+                  <div class="invalid-feedback">Selecione a categoria.</div>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="editarProdutoImagem">Imagem</label>
+                  <input type="file" class="form-control-file" id="editarProdutoImagem" accept="image/*">
+                  <small class="form-text text-muted">Deixe em branco para manter a imagem atual.</small>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal de Edição de Banner -->
+    <div class="modal fade" id="modalEditarBanner" tabindex="-1" role="dialog" aria-labelledby="modalEditarBannerLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="modalEditarBannerLabel">Editar Banner Promocional</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="formEditarBanner" novalidate>
+              <div class="form-group">
+                <label for="editarBannerTitulo">Título *</label>
+                <input type="text" class="form-control" id="editarBannerTitulo" required>
+                <div class="invalid-feedback">Informe o título do banner.</div>
+              </div>
+              <div class="form-group">
+                <label for="editarBannerDescricao">Descrição *</label>
+                <input type="text" class="form-control" id="editarBannerDescricao" required>
+                <div class="invalid-feedback">Informe a descrição do banner.</div>
+              </div>
+              <div class="form-group">
+                <label for="editarBannerImg">Imagem</label>
+                <input type="file" class="form-control-file" id="editarBannerImg" accept="image/*">
+                <small class="form-text text-muted">Deixe em branco para manter a imagem atual.</small>
+              </div>
+              <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Novo Footer Moderno e Animado -->
+    <footer class="footer-animado" style="background:#f5f6fa;color:#232f3e;box-shadow:0 -2px 16px #232f3e11;">
+      <div class="footer-content container">
+        <div class="row align-items-center">
+          <div class="col-md-4 text-center text-md-left mb-2 mb-md-0">
+            <img src="BazaarPlus_logo_website.png" alt="Bazaar+" width="44" style="border-radius:8px;box-shadow:0 2px 8px #0002;">
+            <span class="ml-2 font-weight-bold" style="font-size:1.15rem;letter-spacing:1px;">Bazaar+</span>
+          </div>
+          <div class="col-md-4 text-center mb-2 mb-md-0">
+            <span class="footer-link" style="margin:0 10px;">Sistema de Vendas</span>
+            <span class="footer-link" style="margin:0 10px;">© 2024</span>
+            <span class="footer-link" style="margin:0 10px;">Feito com <span style='color:#f90;font-size:1.1em;'>&#10084;</span></span>
+          </div>
+          <div class="col-md-4 text-center text-md-right">
+            <a href="#" class="footer-social">
+              <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" width="24" style="filter:invert(0.4);margin-right:8px;">
+            </a>
+            <a href="#" class="footer-social">
+              <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" width="24" style="filter:invert(0.4);margin-right:8px;">
+            </a>
+            <a href="#" class="footer-social">
+              <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp" width="24" style="filter:invert(0.4);">
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+</body>
+</html> 

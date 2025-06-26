@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bazaar+ Loja - Produtos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            background: #e3e6e6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 80px;
+        }
+        .navbar {
+            background: #232f3e !important;
+            box-shadow: 0 2px 12px rgba(35,47,62,0.10);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar-brand, .navbar-dark .navbar-nav .nav-link {
+            color: #fff !important;
+        }
+        .navbar-brand img {
+            background: #fff;
+            border-radius: 6px;
+            padding: 2px;
+        }
+        .main-content {
+            flex: 1 0 auto;
+        }
+        .search-bar {
+            max-width: 500px;
+            margin: 0 auto 30px auto;
+            display: flex;
+        }
+        .search-bar input {
+            border-radius: 4px 0 0 4px;
+            border-right: none;
+        }
+        .search-bar button {
+            border-radius: 0 4px 4px 0;
+        }
+        .product-card {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: box-shadow 0.2s, transform 0.2s;
+            border: 1px solid #ddd;
+            background: #fff;
+        }
+        .product-card:hover {
+            box-shadow: 0 8px 32px rgba(35,47,62,0.18);
+            transform: translateY(-6px) scale(1.025);
+            border-color: #f90;
+        }
+        .product-img {
+            height: 180px;
+            object-fit: contain;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+        .product-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #232f3e;
+            margin-bottom: 0.25rem;
+        }
+        .product-price {
+            color: #b12704;
+            font-size: 1.35rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .product-type {
+            font-size: 1rem;
+            color: #555;
+        }
+        .badge-info {
+            background: #232f3e;
+            color: #fff;
+        }
+        .footer-animado {
+            background: #f5f6fa !important;
+            color: #232f3e !important;
+            box-shadow: 0 -2px 16px #232f3e11;
+            padding: 22px 0 12px 0;
+            margin-top: auto;
+            border-top: 1px solid #ececec;
+        }
+        .footer-animado .footer-content {
+            position: relative;
+            z-index: 2;
+        }
+        .footer-animado .footer-link {
+            font-size: 1.01rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            opacity: 0.92;
+            transition: color 0.3s;
+        }
+        .footer-animado .footer-link:hover {
+            color: #f90;
+            opacity: 1;
+        }
+        .footer-animado .footer-social img {
+            transition: filter 0.3s;
+            filter: invert(0.4);
+        }
+        .footer-animado .footer-social:hover img {
+            filter: invert(0.2) brightness(1.2);
+        }
+        .footer-animado .footer-wave {
+            position: absolute;
+            top: -10px;
+            left: 0;
+            width: 100%;
+            height: 22px;
+            background: url('data:image/svg+xml;utf8,<svg width="100%25" height="22" viewBox="0 0 1200 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0C150 22 350 22 600 0C850 -22 1050 -22 1200 0V22H0V0Z" fill="%23f5f6fa"/></svg>') repeat-x;
+            z-index: 1;
+            animation: waveMove 14s linear infinite;
+            opacity: 0.7;
+        }
+        @keyframes waveMove {
+            0% { background-position-x: 0; }
+            100% { background-position-x: 1200px; }
+        }
+        @keyframes logoPulse {
+            0% { box-shadow: 0 0 0 0 #f7ca0022; }
+            100% { box-shadow: 0 0 8px 4px #f7ca0022; }
+        }
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(16px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 991px) {
+            .product-title {
+                font-size: 1.05rem;
+            }
+            .product-img {
+                height: 140px;
+            }
+        }
+        @media (max-width: 768px) {
+            .search-bar {
+                max-width: 100%;
+                flex-direction: column;
+            }
+            .search-bar input, .search-bar button {
+                border-radius: 4px !important;
+                margin-bottom: 8px;
+            }
+            .product-title {
+                font-size: 1rem;
+            }
+            .product-img {
+                height: 110px;
+            }
+            .footer-animado .footer-link {
+                font-size: 0.95rem;
+            }
+        }
+        .banner-magalu {
+            background: linear-gradient(90deg, #f7ca00 0%, #fff 100%);
+            box-shadow: 0 8px 40px 0 rgba(35,47,62,0.18);
+            padding: 2.5rem 3rem;
+            min-height: 240px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 0;
+            position: relative;
+            overflow: hidden;
+            animation: bannerFadeIn 1.1s cubic-bezier(.4,0,.2,1);
+        }
+        @keyframes bannerFadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: none; }
+        }
+        .banner-img-area {
+            max-width: 380px;
+            width: 100%;
+            position: relative;
+        }
+        .banner-img {
+            width: 100%;
+            max-width: 340px;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 0;
+            background: #f5f5f5;
+            box-shadow: 0 6px 32px #0002;
+            filter: brightness(1.08) drop-shadow(0 2px 16px #f7ca0033);
+            animation: bannerShine 2.5s infinite linear alternate;
+        }
+        @keyframes bannerShine {
+            0% { filter: brightness(1.08) drop-shadow(0 2px 16px #f7ca0033); }
+            100% { filter: brightness(1.18) drop-shadow(0 4px 32px #f7ca0066); }
+        }
+        .banner-titulo {
+            color: #232f3e;
+            font-size: 2.3rem;
+            font-weight: 900;
+            text-shadow: 0 2px 12px #fff7, 0 1px 0 #f7ca00;
+            letter-spacing: 1px;
+        }
+        .banner-descricao {
+            color: #444;
+            font-size: 1.3rem;
+            margin-top: 0.7rem;
+            text-shadow: 0 1px 8px #fff5;
+        }
+        .banner-btn {
+            margin-top: 1.5rem;
+            background: linear-gradient(90deg, #ff6600 0%, #f7ca00 100%);
+            color: #232f3e;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            padding: 0.7rem 2.2rem;
+            box-shadow: 0 2px 8px #f7ca0033;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.18s;
+        }
+        .banner-btn:hover {
+            background: linear-gradient(90deg, #f7ca00 0%, #ff6600 100%);
+            color: #232f3e;
+            box-shadow: 0 4px 16px #f7ca0033;
+            transform: translateY(-2px) scale(1.04);
+        }
+        @media (max-width: 991px) {
+            .banner-magalu {
+                flex-direction: column;
+                padding: 1.2rem 0.7rem;
+                min-height: 160px;
+            }
+            .banner-img-area {
+                max-width: 220px;
+            }
+            .banner-img {
+                max-width: 220px;
+                height: 120px;
+            }
+            .banner-titulo {
+                font-size: 1.3rem;
+            }
+            .banner-descricao {
+                font-size: 1rem;
+            }
+        }
+        #btnVoltarTopo {
+            display: none;
+            position: fixed;
+            right: 32px;
+            bottom: 100px;
+            z-index: 1050;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #f7ca00 60%, #ff6600 100%);
+            color: #232f3e;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 4px 18px #232f3e22;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+            cursor: pointer;
+            outline: none;
+            padding: 0;
+        }
+        #btnVoltarTopo:hover {
+            background: linear-gradient(135deg, #ff6600 60%, #f7ca00 100%);
+            color: #fff;
+            box-shadow: 0 8px 24px #ff660033;
+            transform: translateY(-3px) scale(1.08);
+        }
+        .bandeira-radio input:checked + img,
+        .bandeira-radio input:focus + img {
+            outline: 2.5px solid #28a745;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 2px #f7ca00;
+            border-radius: 7px;
+        }
+        .bandeira-img {
+            transition: outline 0.18s, box-shadow 0.18s;
+        }
+        /* Responsividade para modal de pagamento */
+        #modalPagamento .modal-dialog {
+          max-width: 430px;
+          margin: 1.75rem auto;
+        }
+        #modalPagamento .modal-body {
+          max-height: 65vh;
+          overflow-y: auto;
+          padding-bottom: 0.5rem;
+        }
+        @media (max-width: 575px) {
+          #modalPagamento .modal-dialog {
+            max-width: 98vw;
+            margin: 0.5rem auto;
+          }
+          #modalPagamento .modal-body {
+            max-height: 60vh;
+            padding-bottom: 0.5rem;
+          }
+        }
+        .boleto-realista .row.no-gutters.mb-1 > [class^='col-'] > div {
+            margin-bottom: 2px;
+        }
+        .boleto-realista .row.no-gutters.mb-1 {
+            margin-bottom: 8px !important;
+        }
+        .boleto-realista .row.no-gutters.mb-2 {
+            margin-bottom: 14px !important;
+        }
+        .boleto-realista div[style*='font-size:0.95rem'] {
+            margin-bottom: 1px;
+        }
+        .boleto-realista div[style*='font-size:1.05rem'],
+        .boleto-realista div[style*='font-size:1.1rem'] {
+            margin-bottom: 2px;
+        }
+        .boleto-realista {
+            line-height: 1.35;
+        }
+        #produtosContainer {
+            padding-bottom: 100px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark position-relative">
+        <a class="navbar-brand" href="#">
+            <img src="BazaarPlus_logo_website.png" width="40" height="40" class="d-inline-block align-top" alt=""> Bazaar+ Loja
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto align-items-center">
+                <li class="nav-item active"><a class="nav-link" href="#produtos">Produtos</a></li>
+                <li class="nav-item ml-3">
+                    <button id="btnCarrinho" class="btn btn-warning position-relative" style="font-size:1.3rem;padding:0.4rem 1.2rem;border-radius:50px;">
+                        <span class="fa fa-shopping-cart"></span>
+                        <span id="carrinhoQtd" class="badge badge-danger position-absolute" style="top:-8px;right:-8px;font-size:0.9rem;">0</span>
+                    </button>
+                </li>
+                <li class="nav-item ml-3 d-flex align-items-center dropdown" id="areaUsuarioLogado" style="font-size:1.1rem;font-weight:600;color:#232f3e;">
+                    <img src="https://i.imgur.com/1Q9Z1Zm.png" id="avatarUsuarioLogado" alt="Avatar" style="width:36px;height:36px;border-radius:50%;object-fit:cover;margin-right:8px;border:2px solid #f7ca00;">
+                    <a href="#" id="nomeUsuarioLogado" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:#fff;text-decoration:none;outline:none;">Usuário</a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="nomeUsuarioLogado">
+                        <a class="dropdown-item" href="#" id="btnEditarPerfil"><i class="fa fa-user-edit mr-2"></i>Editar Perfil</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#" id="btnLogout">Sair</a>
+                    </div>
+                    <button id="btnAcessoCadastro" class="btn btn-sm btn-outline-info ml-3" style="display:none;">Cadastro de Produtos</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Banner Promocional -->
+    <div id="areaBanner" class="mb-4" style="display:none;">
+        <div class="banner-magalu d-flex flex-wrap align-items-center justify-content-between">
+            <div class="banner-img-area text-center flex-shrink-0">
+                <img id="bannerImg" src="" alt="Banner Promo" class="banner-img">
+            </div>
+            <div class="banner-text-area flex-grow-1 pl-md-4 pl-0 mt-3 mt-md-0 text-md-left text-center">
+                <h3 id="bannerTitulo" class="banner-titulo mb-2"></h3>
+                <p id="bannerDescricao" class="banner-descricao mb-0"></p>
+                <button class="banner-btn mt-3" onclick="window.scrollTo({top: document.getElementById('produtos').offsetTop-60, behavior: 'smooth'});">Ver Ofertas</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4 main-content" id="produtos">
+        <form class="search-bar mb-4 d-flex" id="formBusca" autocomplete="off">
+            <select class="form-control mr-2" id="selectCategoria" style="max-width:180px;">
+                <option value="">Todas as categorias</option>
+            </select>
+            <input type="text" class="form-control flex-grow-1 mr-2" id="inputBusca" placeholder="Buscar por nome, descrição, tipo ou fornecedor..." style="min-width:260px;">
+            <button class="btn btn-warning" type="submit"><b>Buscar</b></button>
+        </form>
+        <h2 class="mb-4 text-center">Produtos e Serviços Disponíveis</h2>
+        <div class="row" id="produtosContainer">
+            <!-- Cards de produtos serão inseridos aqui via JS -->
+        </div>
+    </div>
+
+    <footer class="footer-animado" style="background:#f5f6fa;color:#232f3e;box-shadow:0 -2px 16px #232f3e11;">
+        <div class="footer-content container">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center text-md-left mb-2 mb-md-0">
+                    <img src="BazaarPlus_logo_website.png" alt="Bazaar+" width="44" style="border-radius:8px;box-shadow:0 2px 8px #0002;">
+                    <span class="ml-2 font-weight-bold" style="font-size:1.15rem;letter-spacing:1px;">Bazaar+</span>
+                </div>
+                <div class="col-md-4 text-center mb-2 mb-md-0">
+                    <span class="footer-link" style="margin:0 10px;">Sistema de Vendas</span>
+                    <span class="footer-link" style="margin:0 10px;">© 2024</span>
+                    <span class="footer-link" style="margin:0 10px;">Feito com <span style='color:#f90;font-size:1.1em;'>&#10084;</span></span>
+                </div>
+                <div class="col-md-4 text-center text-md-right">
+                    <a href="#" class="footer-social">
+                        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" width="24" style="filter:invert(0.4);margin-right:8px;">
+                    </a>
+                    <a href="#" class="footer-social">
+                        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" width="24" style="filter:invert(0.4);margin-right:8px;">
+                    </a>
+                    <a href="#" class="footer-social">
+                        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp" width="24" style="filter:invert(0.4);">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <button id="btnVoltarTopo" style="display:none;" title="Voltar ao Topo">&#8593;</button>
+
+    <!-- Modal Carrinho -->
+    <div class="modal fade" id="modalCarrinho" tabindex="-1" role="dialog" aria-labelledby="modalCarrinhoLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-warning text-dark">
+            <h5 class="modal-title" id="modalCarrinhoLabel">Meu Carrinho</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="carrinhoConteudo">
+            <!-- Conteúdo do carrinho será inserido via JS -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-success" id="btnFinalizarCompra">Finalizar Compra</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Pagamento -->
+    <div class="modal fade" id="modalPagamento" tabindex="-1" role="dialog" aria-labelledby="modalPagamentoLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="modalPagamentoLabel">Pagamento</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="resumoPagamento" class="mb-3"></div>
+            <div class="mb-3">
+              <label class="font-weight-bold mb-2">Escolha a forma de pagamento:</label>
+              <div class="btn-group btn-group-toggle d-flex">
+                <label class="btn btn-outline-success flex-fill active">
+                  <input type="radio" name="pagamentoOpcao" id="pagamentoPix" autocomplete="off" checked> Pix
+                </label>
+                <label class="btn btn-outline-primary flex-fill">
+                  <input type="radio" name="pagamentoOpcao" id="pagamentoCartao" autocomplete="off"> Cartão
+                </label>
+                <label class="btn btn-outline-warning flex-fill">
+                  <input type="radio" name="pagamentoOpcao" id="pagamentoBoleto" autocomplete="off"> Boleto
+                </label>
+              </div>
+            </div>
+            <div id="areaPix" class="pagamento-area mt-3"> 
+              <div class="text-center mb-2" style="min-height:260px;">
+                <img id="qrPixImg" src="" alt="QR Code Pix" style="width:240px;height:240px;object-fit:contain;box-shadow:0 2px 8px #0001;">
+              </div>
+              Chave Pix: <b>zangelaegu@outlook.com</b><br>
+              <small>Copie a chave, escaneie o QR Code ou copie o payload para pagar.</small>
+              <div class="mt-2">
+                <label style="font-size:0.98rem;font-weight:600;">Payload Pix:</label>
+                <textarea class="form-control" rows="3" readonly style="font-size:0.95rem;">00020126580014br.gov.bcb.pix0131zangelaegu@outlook.com520400005303986540400005802BR5910BAZAARPLUS6009SAOPAULO62070503ABC1236304B14F</textarea>
+              </div>
+            </div>
+            <div id="areaCartao" class="pagamento-area mt-3" style="display:none;">
+              <div class="mb-3">
+                <label class="font-weight-bold mb-2 d-block">Bandeira do Cartão:</label>
+                <div class="d-flex align-items-center flex-wrap" id="bandeirasCartao">
+                  <label class="bandeira-radio mr-2 mb-2" style="cursor:pointer;">
+                    <input type="radio" name="bandeiraCartao" value="Visa" class="d-none" checked>
+                    <img src="https://img.icons8.com/color/36/000000/visa.png" alt="Visa" title="Visa" class="bandeira-img">
+                  </label>
+                  <label class="bandeira-radio mr-2 mb-2" style="cursor:pointer;">
+                    <input type="radio" name="bandeiraCartao" value="MasterCard" class="d-none">
+                    <img src="https://img.icons8.com/color/36/000000/mastercard-logo.png" alt="MasterCard" title="MasterCard" class="bandeira-img">
+                  </label>
+                  <label class="bandeira-radio mr-2 mb-2" style="cursor:pointer;">
+                    <input type="radio" name="bandeiraCartao" value="Amex" class="d-none">
+                    <img src="https://img.icons8.com/color/36/000000/amex.png" alt="Amex" title="American Express" class="bandeira-img">
+                  </label>
+                  <label class="bandeira-radio mr-2 mb-2" style="cursor:pointer;">
+                    <input type="radio" name="bandeiraCartao" value="Diners Club" class="d-none">
+                    <img src="https://img.icons8.com/color/36/000000/diners-club.png" alt="Diners Club" title="Diners Club" class="bandeira-img">
+                  </label>
+                  <label class="bandeira-radio mr-2 mb-2" style="cursor:pointer;">
+                    <input type="radio" name="bandeiraCartao" value="Discover" class="d-none">
+                    <img src="https://img.icons8.com/color/36/000000/discover.png" alt="Discover" title="Discover" class="bandeira-img">
+                  </label>
+                  <label class="bandeira-radio mr-2 mb-2" style="cursor:pointer;">
+                    <input type="radio" name="bandeiraCartao" value="JCB" class="d-none">
+                    <img src="https://img.icons8.com/color/36/000000/jcb.png" alt="JCB" title="JCB" class="bandeira-img">
+                  </label>
+                  <label class="bandeira-radio mr-2 mb-2" style="cursor:pointer;">
+                    <input type="radio" name="bandeiraCartao" value="Aura" class="d-none">
+                    <img src="https://i.imgur.com/1Q9Z1Zm.png" alt="Aura" title="Aura" style="width:36px;height:24px;object-fit:contain;" class="bandeira-img">
+                  </label>
+                  <label class="bandeira-radio mr-2 mb-2" style="cursor:pointer;">
+                    <input type="radio" name="bandeiraCartao" value="Cabal" class="d-none">
+                    <img src="https://i.imgur.com/4QfKuz1.png" alt="Cabal" title="Cabal" style="width:36px;height:24px;object-fit:contain;" class="bandeira-img">
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="numeroCartao">Número do Cartão</label>
+                <input type="text" class="form-control" id="numeroCartao" placeholder="Número do Cartão" maxlength="19" autocomplete="cc-number">
+                <div class="invalid-feedback" id="erroNumeroCartao" style="display:none"></div>
+              </div>
+              <div class="form-group">
+                <label for="nomeCartao">Nome impresso no Cartão</label>
+                <input type="text" class="form-control" id="nomeCartao" placeholder="Nome impresso no Cartão" autocomplete="cc-name">
+                <div class="invalid-feedback" id="erroNomeCartao" style="display:none"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-6">
+                  <label for="validadeCartao">Validade</label>
+                  <input type="text" class="form-control" id="validadeCartao" placeholder="MM/AA" maxlength="5" autocomplete="cc-exp">
+                  <div class="invalid-feedback" id="erroValidadeCartao" style="display:none"></div>
+                </div>
+                <div class="form-group col-6">
+                  <label for="cvvCartao">CVV</label>
+                  <input type="text" class="form-control" id="cvvCartao" placeholder="CVV" maxlength="4" autocomplete="cc-csc">
+                  <div class="invalid-feedback" id="erroCvvCartao" style="display:none"></div>
+                </div>
+              </div>
+              <div class="form-group mt-2">
+                <label for="selectParcelas"><b>Parcelamento</b>:</label>
+                <select class="form-control" id="selectParcelas"></select>
+                <small class="form-text text-muted">Sem juros</small>
+              </div>
+            </div>
+            <div id="areaBoleto" class="pagamento-area mt-3" style="display:none;">
+              <div id="boletoSimulado" class="boleto-realista bg-white p-2 p-md-3 rounded shadow-sm" style="max-width:650px;margin:auto;border:1.5px solid #222;">
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-1 mb-1">
+                  <div style="font-weight:bold;font-size:1.2rem;">Bradesco</div>
+                  <div style="font-size:1.5rem;font-weight:900;letter-spacing:2px;"><span style="border:2px solid #222;border-radius:50%;padding:0 7px 0 7px;">237</span>-2</div>
+                  <div style="font-family:monospace;font-size:1.1rem;font-weight:600;"> <span id="boletoLinha">23792.72905 90000.001959 31002.948805 1 8983000005400</span> </div>
+                </div>
+                <div class="row no-gutters mb-1">
+                  <div class="col-8">
+                    <div style="font-size:0.95rem;font-weight:600;">LOCAL DE PAGAMENTO</div>
+                    <div style="font-size:1.05rem;font-weight:700;">PAGÁVEL EM QUALQUER BANCO ATÉ O VENCIMENTO.</div>
+                  </div>
+                  <div class="col-4">
+                    <div style="font-size:0.95rem;font-weight:600;">VENCIMENTO</div>
+                    <div id="boletoVencimento" style="font-size:1.1rem;font-weight:700;">12/05/2022</div>
+                  </div>
+                </div>
+                <div class="row no-gutters mb-1">
+                  <div class="col-8">
+                    <div style="font-size:0.95rem;font-weight:600;">BENEFICIÁRIO</div>
+                    <div style="font-size:1.05rem;font-weight:700;">Bazaar+ Comércio Ltda CNPJ: 12.345.678/0001-99</div>
+                  </div>
+                  <div class="col-4">
+                    <div style="font-size:0.95rem;font-weight:600;">AGÊNCIA/CÓD. BENEFICIÁRIO</div>
+                    <div style="font-size:1.05rem;font-weight:700;">2729/29488-8</div>
+                  </div>
+                </div>
+                <div class="row no-gutters mb-1">
+                  <div class="col-3">
+                    <div style="font-size:0.95rem;font-weight:600;">DATA DO DOCUMENTO</div>
+                    <div id="boletoDataDoc" style="font-size:1.05rem;font-weight:700;">12/04/2022</div>
+                  </div>
+                  <div class="col-3">
+                    <div style="font-size:0.95rem;font-weight:600;">Nº DO DOCUMENTO</div>
+                    <div style="font-size:1.05rem;font-weight:700;">D27204</div>
+                  </div>
+                  <div class="col-3">
+                    <div style="font-size:0.95rem;font-weight:600;">ESPÉCIE DOC.</div>
+                    <div style="font-size:1.05rem;font-weight:700;">DM</div>
+                  </div>
+                  <div class="col-3">
+                    <div style="font-size:0.95rem;font-weight:600;">NOSSO NÚMERO</div>
+                    <div style="font-size:1.05rem;font-weight:700;">009/00000019531-9</div>
+                  </div>
+                </div>
+                <div class="row no-gutters mb-1">
+                  <div class="col-3">
+                    <div style="font-size:0.95rem;font-weight:600;">VALOR DO DOCUMENTO</div>
+                    <div id="boletoValor" style="font-size:1.1rem;font-weight:700;">R$ 554,00</div>
+                  </div>
+                  <div class="col-3">
+                    <div style="font-size:0.95rem;font-weight:600;">(-) OUTRAS DEDUÇÕES</div>
+                    <div style="font-size:1.05rem;font-weight:700;">-</div>
+                  </div>
+                  <div class="col-3">
+                    <div style="font-size:0.95rem;font-weight:600;">(+) MORA/MULTA</div>
+                    <div style="font-size:1.05rem;font-weight:700;">-</div>
+                  </div>
+                </div>
+                <div class="row no-gutters mb-1">
+                  <div class="col-12">
+                    <div style="font-size:0.95rem;font-weight:600;">INSTRUÇÕES</div>
+                    <div style="font-size:0.98rem;">COBRAR JUROS DE R$ 1,48 POR DIA DE ATRASO. MULTA DE 2,00% APÓS O VENCIMENTO.<br>ATENÇÃO! O pagamento deste título através de depósito direto na conta do sacador/avalista NÃO É PERMITIDO.<br>Este boleto é apenas ilustrativo e não possui valor legal para pagamento.</div>
+                  </div>
+                </div>
+                <div class="row no-gutters mb-1">
+                  <div class="col-12">
+                    <div style="font-size:0.95rem;font-weight:600;">PAGADOR</div>
+                    <div id="boletoPagador" style="font-size:1.05rem;font-weight:700;">(preencher via JS)</div>
+                  </div>
+                </div>
+                <div class="row no-gutters mb-2">
+                  <div class="col-12">
+                    <div style="font-size:0.95rem;font-weight:600;">BENEFICIÁRIO FINAL</div>
+                    <div style="font-size:1.05rem;font-weight:700;">Bazaar+ Comércio Ltda</div>
+                  </div>
+                </div>
+                <div class="row no-gutters align-items-center">
+                  <div class="col-10">
+                    <img id="boletoBarCode" src="https://api.qrserver.com/v1/create-qr-code/?size=440x60&data=23793381286000000012345678901234567890123456" alt="Código de Barras Boleto" style="width:100%;max-width:440px;height:60px;object-fit:contain;">
+                  </div>
+                  <div class="col-2 text-right">
+                    <button class="btn btn-outline-secondary btn-sm" id="btnBaixarBoleto"><span class="fa fa-download mr-1"></span>PDF</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-row mt-3">
+              <div class="form-group col-md-4">
+                <label for="inputCasa">Casa/Apto</label>
+                <input type="text" class="form-control" id="inputCasa" placeholder="Ex: Casa, Apto, Bloco..." required>
+                <div class="invalid-feedback">Informe o tipo de residência.</div>
+              </div>
+              <div class="form-group col-md-2">
+                <label for="inputNumero">Número</label>
+                <input type="text" class="form-control" id="inputNumero" placeholder="Nº" required>
+                <div class="invalid-feedback">Informe o número.</div>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="inputCep">CEP</label>
+                <input type="text" class="form-control" id="inputCep" placeholder="CEP" required>
+                <div class="invalid-feedback">Informe o CEP.</div>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="inputCidade">Cidade</label>
+                <input type="text" class="form-control" id="inputCidade" placeholder="Cidade" required>
+                <div class="invalid-feedback">Informe a cidade.</div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="inputEstado">Estado</label>
+                <input type="text" class="form-control" id="inputEstado" placeholder="Estado" required>
+                <div class="invalid-feedback">Informe o estado.</div>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="inputPais">País</label>
+                <input type="text" class="form-control" id="inputPais" placeholder="País" required>
+                <div class="invalid-feedback">Informe o país.</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="font-weight-bold">Localização no mapa:</label>
+              <div id="mapaEntrega" style="width:100%;height:260px;border-radius:8px;border:1px solid #ccc;"></div>
+              <div id="tempoEntrega" class="mt-2 text-info font-weight-bold"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-success" id="btnConfirmarPagamento">Confirmar Pagamento</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de edição de perfil -->
+    <div class="modal fade" id="modalEditarPerfil" tabindex="-1" role="dialog" aria-labelledby="modalEditarPerfilLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="modalEditarPerfilLabel">Editar Perfil</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="formEditarPerfil" novalidate>
+              <div class="form-group">
+                <label for="perfilNome">Nome</label>
+                <input type="text" class="form-control" id="perfilNome" required>
+              </div>
+              <div class="form-group">
+                <label for="perfilTelefone">Telefone</label>
+                <input type="text" class="form-control" id="perfilTelefone" required pattern="\(\d{2}\) \d{4,5}-\d{4}">
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="perfilCep">CEP</label>
+                  <input type="text" class="form-control" id="perfilCep" required pattern="\d{5}-\d{3}">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="perfilCasa">Casa/Apto</label>
+                  <input type="text" class="form-control" id="perfilCasa" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label for="perfilNumero">Número</label>
+                  <input type="text" class="form-control" id="perfilNumero" required>
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="perfilCidade">Cidade</label>
+                  <input type="text" class="form-control" id="perfilCidade" required>
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="perfilEstado">Estado</label>
+                  <input type="text" class="form-control" id="perfilEstado" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="perfilPais">País</label>
+                <input type="text" class="form-control" id="perfilPais" required>
+              </div>
+              <button type="submit" class="btn btn-success">Salvar Alterações</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="loja.js"></script>
+    <script>
+    // Mostrar/ocultar header e botão flutuante ao rolar
+    const header = document.querySelector('.navbar');
+    const btnVoltar = document.getElementById('btnVoltarTopo');
+    window.addEventListener('scroll', function() {
+        if(window.scrollY > 120) {
+            if(header) header.style.opacity = '0';
+            if(btnVoltar) btnVoltar.style.display = 'block';
+        } else {
+            if(header) header.style.opacity = '1';
+            if(btnVoltar) btnVoltar.style.display = 'none';
+        }
+    });
+    if(btnVoltar) btnVoltar.onclick = function() {
+        window.scrollTo({top:0, behavior:'smooth'});
+    };
+
+    // Garante que ao clicar em Cartão, tudo aparece corretamente
+    document.querySelectorAll('input[name="pagamentoOpcao"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.getElementById('areaPix').style.display = this.id === 'pagamentoPix' ? '' : 'none';
+            document.getElementById('areaCartao').style.display = this.id === 'pagamentoCartao' ? '' : 'none';
+            document.getElementById('areaBoleto').style.display = this.id === 'pagamentoBoleto' ? '' : 'none';
+            // Parcelas só aparecem no cartão
+            if(this.id === 'pagamentoCartao') {
+                document.getElementById('selectParcelas').parentElement.style.display = '';
+            } else {
+                document.getElementById('selectParcelas').parentElement.style.display = 'none';
+            }
+        });
+    });
+
+    // Exibir botão de acesso ao cadastro de produtos se gerente
+    if (localStorage.getItem('usuarioLogado')) {
+        const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
+        if (usuario && usuario.tipoUsuario === 'gerente') {
+            document.getElementById('btnAcessoCadastro').style.display = '';
+            document.getElementById('btnAcessoCadastro').onclick = function() {
+                window.location.href = 'index.html';
+            };
+        }
+    }
+    </script>
+</body>
+</html> 
