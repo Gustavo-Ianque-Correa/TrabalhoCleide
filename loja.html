@@ -47,8 +47,7 @@
             border-radius: 0 4px 4px 0;
         }
         .product-card {
-            min-height: 420px;
-            height: 100%;
+            min-height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -88,58 +87,19 @@
             background: #232f3e;
             color: #fff;
         }
-        .footer-animado {
-            background: #f5f6fa !important;
-            color: #232f3e !important;
-            box-shadow: 0 -2px 16px #232f3e11;
-            padding: 22px 0 12px 0;
-            margin-top: auto;
-            border-top: 1px solid #ececec;
-        }
-        .footer-animado .footer-content {
-            position: relative;
-            z-index: 2;
-        }
-        .footer-animado .footer-link {
-            font-size: 1.01rem;
-            font-weight: 500;
-            letter-spacing: 1px;
-            opacity: 0.92;
-            transition: color 0.3s;
-        }
-        .footer-animado .footer-link:hover {
-            color: #f90;
-            opacity: 1;
-        }
-        .footer-animado .footer-social img {
-            transition: filter 0.3s;
-            filter: invert(0.4);
-        }
-        .footer-animado .footer-social:hover img {
-            filter: invert(0.2) brightness(1.2);
-        }
-        .footer-animado .footer-wave {
-            position: absolute;
-            top: -10px;
-            left: 0;
+        .footer-amazon {
+            background: rgba(35,47,62,0.85);
+            color: #fff;
+            padding: 20px 0 10px 0;
+            margin-top: 40px;
             width: 100%;
-            height: 22px;
-            background: url('data:image/svg+xml;utf8,<svg width="100%25" height="22" viewBox="0 0 1200 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0C150 22 350 22 600 0C850 -22 1050 -22 1200 0V22H0V0Z" fill="%23f5f6fa"/></svg>') repeat-x;
-            z-index: 1;
-            animation: waveMove 14s linear infinite;
-            opacity: 0.7;
-        }
-        @keyframes waveMove {
-            0% { background-position-x: 0; }
-            100% { background-position-x: 1200px; }
-        }
-        @keyframes logoPulse {
-            0% { box-shadow: 0 0 0 0 #f7ca0022; }
-            100% { box-shadow: 0 0 8px 4px #f7ca0022; }
-        }
-        @keyframes fadeInUp {
-            0% { opacity: 0; transform: translateY(16px); }
-            100% { opacity: 1; transform: translateY(0); }
+            text-align: center;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 -2px 16px rgba(35,47,62,0.10);
+            transition: background 0.3s, backdrop-filter 0.3s;
         }
         @media (max-width: 991px) {
             .product-title {
@@ -164,8 +124,9 @@
             .product-img {
                 height: 110px;
             }
-            .footer-animado .footer-link {
+            .footer-amazon {
                 font-size: 0.95rem;
+                padding: 14px 0 8px 0;
             }
         }
         .banner-magalu {
@@ -260,9 +221,9 @@
         #btnVoltarTopo {
             display: none;
             position: fixed;
-            right: 32px;
-            bottom: 100px;
-            z-index: 1050;
+            right: 22px;
+            bottom: 22px;
+            z-index: 9999;
             width: 44px;
             height: 44px;
             background: linear-gradient(135deg, #f7ca00 60%, #ff6600 100%);
@@ -335,9 +296,6 @@
         .boleto-realista {
             line-height: 1.35;
         }
-        #produtosContainer {
-            padding-bottom: 100px;
-        }
     </style>
 </head>
 <body>
@@ -400,32 +358,7 @@
         </div>
     </div>
 
-    <footer class="footer-animado" style="background:#f5f6fa;color:#232f3e;box-shadow:0 -2px 16px #232f3e11;">
-        <div class="footer-content container">
-            <div class="row align-items-center">
-                <div class="col-md-4 text-center text-md-left mb-2 mb-md-0">
-                    <img src="BazaarPlus_logo_website.png" alt="Bazaar+" width="44" style="border-radius:8px;box-shadow:0 2px 8px #0002;">
-                    <span class="ml-2 font-weight-bold" style="font-size:1.15rem;letter-spacing:1px;">Bazaar+</span>
-                </div>
-                <div class="col-md-4 text-center mb-2 mb-md-0">
-                    <span class="footer-link" style="margin:0 10px;">Sistema de Vendas</span>
-                    <span class="footer-link" style="margin:0 10px;">© 2025</span>
-                    <span class="footer-link" style="margin:0 10px;">Feito com <span style='color:#f90;font-size:1.1em;'>&#10084;</span></span>
-                </div>
-                <div class="col-md-4 text-center text-md-right">
-                    <a href="#" class="footer-social">
-                        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" width="24" style="filter:invert(0.4);margin-right:8px;">
-                    </a>
-                    <a href="#" class="footer-social">
-                        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" width="24" style="filter:invert(0.4);margin-right:8px;">
-                    </a>
-                    <a href="#" class="footer-social">
-                        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp" width="24" style="filter:invert(0.4);">
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <footer id="footerAmazon" class="footer-amazon text-center mt-5 mb-0" style="background:rgba(35,47,62,0.85);color:#fff;padding:18px 0 10px 0;margin-top:40px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">&copy; Bazaar+ 2025 | Inspirado em Amazon</footer>
     <button id="btnVoltarTopo" style="display:none;" title="Voltar ao Topo">&#8593;</button>
 
     <!-- Modal Carrinho -->
