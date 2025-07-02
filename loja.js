@@ -1,3 +1,8 @@
+// Redireciona para home.html se não estiver logado
+if (!localStorage.getItem('usuarioLogado')) {
+    window.location.href = 'home.html';
+}
+
 // Proteção de acesso: só usuários logados
 const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
 if (!usuarioLogado) {
@@ -126,7 +131,7 @@ function renderizarProdutos(lista) {
     }
     lista.forEach(produto => {
         let card = document.createElement('div');
-        card.className = 'col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex flex-column align-items-stretch';
+        card.className = 'col-12 col-sm-6 col-md-4 col-lg-3 mb-4';
         let imagem = produto.imagem ? produto.imagem : 'https://via.placeholder.com/220x180?text=Produto';
         let emPromocao = produto.promocao && produto.promocao > 0 && produto.promocao < produto.valor;
         card.innerHTML = `
@@ -145,14 +150,9 @@ function renderizarProdutos(lista) {
                     </div>
                 </div>
             </a>
+            <button class="btn btn-warning btn-block mt-2" onclick="adicionarAoCarrinho(${produto.id})"><span class="fa fa-cart-plus mr-1"></span>Adicionar ao Carrinho</button>
         `;
         container.appendChild(card);
-        // Botão fora do card
-        let btn = document.createElement('button');
-        btn.className = 'btn btn-warning btn-block mt-2';
-        btn.innerHTML = '<span class="fa fa-cart-plus mr-1"></span>Adicionar ao Carrinho';
-        btn.onclick = function() { adicionarAoCarrinho(produto.id); };
-        card.appendChild(btn);
     });
 }
 
@@ -539,33 +539,12 @@ window.onload = function() {
         let enderecoEntrega = {
             casa, numero, cep, cidade, estado, pais
         };
-        let camposEndereco = [
-            { id: 'inputCasa', valor: enderecoEntrega.casa },
-            { id: 'inputNumero', valor: enderecoEntrega.numero },
-            { id: 'inputCep', valor: enderecoEntrega.cep },
-            { id: 'inputCidade', valor: enderecoEntrega.cidade },
-            { id: 'inputEstado', valor: enderecoEntrega.estado },
-            { id: 'inputPais', valor: enderecoEntrega.pais }
-        ];
-        let algumInvalido = false;
-        camposEndereco.forEach(campo => {
-            let el = document.getElementById(campo.id);
-            if (el) {
-                if (!campo.valor) {
-                    el.classList.add('is-invalid');
-                    algumInvalido = true;
-                } else {
-                    el.classList.remove('is-invalid');
-                }
-            }
-        });
-        if (algumInvalido) {
-            let primeiro = camposEndereco.find(campo => !campo.valor);
-            if (primeiro) {
-                let el = document.getElementById(primeiro.id);
-                if (el) el.focus();
-            }
+        if (!enderecoEntrega.casa || !enderecoEntrega.numero || !enderecoEntrega.cep || !enderecoEntrega.cidade || !enderecoEntrega.estado || !enderecoEntrega.pais) {
+            document.getElementById('inputLocalizacaoEntrega').classList.add('is-invalid');
+            document.getElementById('inputLocalizacaoEntrega').focus();
             return;
+        } else {
+            document.getElementById('inputLocalizacaoEntrega').classList.remove('is-invalid');
         }
         if (opcao === 'pagamentoPix') msg = 'Pagamento via Pix confirmado! Obrigado pela compra.';
         else if (opcao === 'pagamentoCartao') {
