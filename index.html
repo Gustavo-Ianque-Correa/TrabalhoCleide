@@ -14,7 +14,6 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding-bottom: 80px;
         }
         .navbar {
             background: #232f3e !important;
@@ -113,39 +112,15 @@
             color: #232f3e;
             border-radius: 12px 12px 0 0;
         }
-        .footer-animado {
-            background: #f5f6fa !important;
-            color: #232f3e !important;
-            box-shadow: 0 -2px 16px #232f3e11;
-            padding: 22px 0 12px 0;
-            margin-top: auto;
-            border-top: 1px solid #ececec;
-        }
-        .footer-animado .footer-link {
-            font-size: 1.01rem;
-            font-weight: 500;
+        .footer-amazon {
+            background: #232f3e;
+            color: #fff;
+            padding: 18px 0 10px 0;
+            margin-top: 40px;
+            flex-shrink: 0;
+            text-align: center;
+            font-size: 1rem;
             letter-spacing: 1px;
-            opacity: 0.92;
-            transition: color 0.3s;
-        }
-        .footer-animado .footer-link:hover {
-            color: #f90;
-            opacity: 1;
-        }
-        .footer-animado .footer-social img {
-            transition: filter 0.3s;
-            filter: invert(0.4);
-        }
-        .footer-animado .footer-social:hover img {
-            filter: invert(0.2) brightness(1.2);
-        }
-        @keyframes logoPulse {
-            0% { box-shadow: 0 0 0 0 #f7ca0033; }
-            100% { box-shadow: 0 0 16px 8px #f7ca0033; }
-        }
-        @keyframes fadeInUp {
-            0% { opacity: 0; transform: translateY(24px); }
-            100% { opacity: 1; transform: translateY(0); }
         }
         @media (max-width: 768px) {
             .card-header {
@@ -664,33 +639,11 @@
         </div>
       </div>
     </div>
-
-    <!-- Novo Footer Moderno e Animado -->
-    <footer class="footer-animado" style="background:#f5f6fa;color:#232f3e;box-shadow:0 -2px 16px #232f3e11;">
-      <div class="footer-content container">
-        <div class="row align-items-center">
-          <div class="col-md-4 text-center text-md-left mb-2 mb-md-0">
-            <img src="BazaarPlus_logo_website.png" alt="Bazaar+" width="44" style="border-radius:8px;box-shadow:0 2px 8px #0002;">
-            <span class="ml-2 font-weight-bold" style="font-size:1.15rem;letter-spacing:1px;">Bazaar+</span>
-          </div>
-          <div class="col-md-4 text-center mb-2 mb-md-0">
-            <span class="footer-link" style="margin:0 10px;">Sistema de Vendas</span>
-            <span class="footer-link" style="margin:0 10px;">© 2024</span>
-            <span class="footer-link" style="margin:0 10px;">Feito com <span style='color:#f90;font-size:1.1em;'>&#10084;</span></span>
-          </div>
-          <div class="col-md-4 text-center text-md-right">
-            <a href="#" class="footer-social">
-              <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" width="24" style="filter:invert(0.4);margin-right:8px;">
-            </a>
-            <a href="#" class="footer-social">
-              <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" width="24" style="filter:invert(0.4);margin-right:8px;">
-            </a>
-            <a href="#" class="footer-social">
-              <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp" width="24" style="filter:invert(0.4);">
-            </a>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <script>
+    // Redireciona para home.html se não estiver logado
+    if (!localStorage.getItem('usuarioLogado')) {
+        window.location.href = 'home.html';
+    }
+    </script>
 </body>
 </html> 
