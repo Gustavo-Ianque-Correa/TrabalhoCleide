@@ -140,6 +140,15 @@
             border: 1.5px solid #eee;
             transition: background 0.18s, box-shadow 0.18s, color 0.18s;
             margin-bottom: 10px;
+            overflow: hidden;
+        }
+        .animated-home-btn {
+            animation: homePulse 1.6s infinite alternate cubic-bezier(.4,0,.2,1);
+        }
+        @keyframes homePulse {
+            0% { transform: scale(1) translateY(0); box-shadow: 0 2px 8px #232f3e22; }
+            60% { transform: scale(1.08) translateY(-2px); box-shadow: 0 6px 18px #f7ca0033; }
+            100% { transform: scale(1) translateY(0); box-shadow: 0 2px 8px #232f3e22; }
         }
         .btn-home-circle:hover {
             background: #f7ca00;
@@ -284,8 +293,8 @@
         </div>
     </div>
     <div class="text-center mt-3">
-        <a href="home.html" class="btn btn-light btn-home-circle" title="Voltar para Home">
-            <span class="fa fa-home"></span>
+        <a href="home.html" class="btn btn-light btn-home-circle animated-home-btn" title="Voltar para Home">
+            <img src="https://img.icons8.com/ios-filled/32/232f3e/home.png" alt="Home" style="width:28px;height:28px;">
         </a>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
