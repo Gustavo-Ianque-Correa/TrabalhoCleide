@@ -274,8 +274,8 @@ window.onload = function() {
             this.value = mascaraTelefone(this.value);
         });
     }
-    if (document.getElementById('clienteCEP')) {
-        document.getElementById('clienteCEP').addEventListener('input', function(e) {
+    if (document.getElementById('clienteCep')) {
+        document.getElementById('clienteCep').addEventListener('input', function(e) {
             this.value = mascaraCEP(this.value);
         });
     }
@@ -288,13 +288,13 @@ window.onload = function() {
             let nome = form.clienteNome.value.trim();
             let telefone = form.clienteTelefone.value.trim();
             let cpf = form.clienteCPF.value.trim();
-            let cep = form.clienteCEP.value.trim();
+            let cep = form.clienteCep.value.trim();
             let endereco = form.clienteEndereco.value.trim();
             let valido = true;
             if (!nome) { form.clienteNome.classList.add('is-invalid'); valido = false; } else { form.clienteNome.classList.remove('is-invalid'); }
             if (!telefone.match(/^\(\d{2}\) \d{4,5}-\d{4}$/)) { form.clienteTelefone.classList.add('is-invalid'); valido = false; } else { form.clienteTelefone.classList.remove('is-invalid'); }
             if (!validarCPF(cpf)) { form.clienteCPF.classList.add('is-invalid'); valido = false; } else { form.clienteCPF.classList.remove('is-invalid'); }
-            if (!cep.match(/^\d{5}-\d{3}$/)) { form.clienteCEP.classList.add('is-invalid'); valido = false; } else { form.clienteCEP.classList.remove('is-invalid'); }
+            if (!cep.match(/^\d{5}-\d{3}$/)) { form.clienteCep.classList.add('is-invalid'); valido = false; } else { form.clienteCep.classList.remove('is-invalid'); }
             if (!endereco) { form.clienteEndereco.classList.add('is-invalid'); valido = false; } else { form.clienteEndereco.classList.remove('is-invalid'); }
             if (!valido) return;
             let novoCliente = {
