@@ -1,305 +1,204 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login / Cadastro | Bazaar+</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            background: linear-gradient(120deg, #f7ca00 0%, #f90 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow-x: hidden;
+// Função utilitária para marcar campo inválido e exibir mensagem
+function setInvalid(id, mensagem) {
+    const campo = document.getElementById(id);
+    if (campo) {
+        campo.classList.add('is-invalid');
+        const feedback = campo.parentElement.querySelector('.invalid-feedback');
+        if (feedback) feedback.textContent = mensagem;
+    }
+}
+
+// Banco de usuários (localStorage)
+let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+function salvarUsuarios() {
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+}
+
+// Cadastro
+const formCadastro = document.getElementById('formCadastro');
+const cadastroTipoCliente = document.getElementById('cadastroTipoCliente');
+const cadastroTipoGerente = document.getElementById('cadastroTipoGerente');
+const cadastroCodigoGerenteArea = document.getElementById('cadastroCodigoGerenteArea');
+[ cadastroTipoCliente, cadastroTipoGerente ].forEach(radio => {
+    radio.addEventListener('change', function() {
+        if (cadastroTipoGerente.checked) {
+            cadastroCodigoGerenteArea.style.display = '';
+        } else {
+            cadastroCodigoGerenteArea.style.display = 'none';
         }
-        .decor-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 0;
-            pointer-events: none;
-            background: radial-gradient(circle at 80% 10%, #fff7c2 0%, #f7ca00 30%, transparent 70%),
-                        radial-gradient(circle at 10% 90%, #fff7c2 0%, #f90 30%, transparent 70%);
-            opacity: 0.25;
+    });
+});
+formCadastro.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const nome = document.getElementById('cadastroNome').value.trim();
+    const telefone = document.getElementById('cadastroTelefone').value.trim();
+    const cep = document.getElementById('cadastroCep').value.trim();
+    const casa = document.getElementById('cadastroCasa').value.trim();
+    const numero = document.getElementById('cadastroNumero').value.trim();
+    const cidade = document.getElementById('cadastroCidade').value.trim();
+    const estado = document.getElementById('cadastroEstado').value.trim();
+    const pais = document.getElementById('cadastroPais').value.trim();
+    let email = formCadastro.cadastroEmail.value.trim().toLowerCase();
+    let senha = formCadastro.cadastroSenha.value;
+    let senha2 = formCadastro.cadastroSenha2.value;
+    let tipoUsuario = cadastroTipoGerente.checked ? 'gerente' : 'cliente';
+    let erro = '';
+    let sucesso = '';
+    let valido = true;
+    // Validações
+    if (!nome) {
+        setInvalid('cadastroNome', 'Informe seu nome.');
+        valido = false;
+    }
+    if (!telefone || !/^\(\d{2}\) \d{4,5}-\d{4}$/.test(telefone)) {
+        setInvalid('cadastroTelefone', 'Informe um telefone válido.');
+        valido = false;
+    }
+    if (!cep || !/^\d{5}-\d{3}$/.test(cep)) {
+        setInvalid('cadastroCep', 'Informe um CEP válido.');
+        valido = false;
+    }
+    if (!casa) {
+        setInvalid('cadastroCasa', 'Informe o tipo de residência.');
+        valido = false;
+    }
+    if (!numero) {
+        setInvalid('cadastroNumero', 'Informe o número.');
+        valido = false;
+    }
+    if (!cidade) {
+        setInvalid('cadastroCidade', 'Informe a cidade.');
+        valido = false;
+    }
+    if (!estado) {
+        setInvalid('cadastroEstado', 'Informe o estado.');
+        valido = false;
+    }
+    if (!pais) {
+        setInvalid('cadastroPais', 'Informe o país.');
+        valido = false;
+    }
+    if (!email.match(/^\S+@\S+\.\S+$/)) { formCadastro.cadastroEmail.classList.add('is-invalid'); valido = false; } else { formCadastro.cadastroEmail.classList.remove('is-invalid'); }
+    if (!senha || senha.length < 4) { formCadastro.cadastroSenha.classList.add('is-invalid'); valido = false; } else { formCadastro.cadastroSenha.classList.remove('is-invalid'); }
+    if (senha !== senha2) { formCadastro.cadastroSenha2.classList.add('is-invalid'); valido = false; } else { formCadastro.cadastroSenha2.classList.remove('is-invalid'); }
+    if (tipoUsuario === 'gerente') {
+        const codigo = formCadastro.cadastroCodigoGerente.value.trim();
+        if (codigo !== 'GERENTE2025') {
+            formCadastro.cadastroCodigoGerente.classList.add('is-invalid');
+            document.getElementById('cadastroErro').textContent = 'Código do gerente incorreto.';
+            return;
+        } else {
+            formCadastro.cadastroCodigoGerente.classList.remove('is-invalid');
         }
-        .auth-card {
-            background: #fff;
-            border-radius: 22px;
-            box-shadow: 0 8px 40px 0 rgba(35,47,62,0.18);
-            padding: 1.2rem 0.7rem 1.2rem 0.7rem;
-            max-width: 410px;
-            width: 100%;
-            margin: 1.2rem auto;
-            position: relative;
-            z-index: 1;
+    }
+    if (!valido) return;
+    if (usuarios.find(u => u.email === email)) {
+        erro = 'E-mail já cadastrado.';
+        document.getElementById('cadastroErro').textContent = erro;
+        document.getElementById('cadastroSucesso').textContent = '';
+        return;
+    }
+    const usuario = {
+        nome,
+        telefone,
+        cep,
+        casa,
+        numero,
+        cidade,
+        estado,
+        pais,
+        email,
+        senha,
+        tipoUsuario
+    };
+    usuarios.push(usuario);
+    salvarUsuarios();
+    sucesso = 'Cadastro realizado com sucesso! Redirecionando...';
+    document.getElementById('cadastroErro').textContent = '';
+    document.getElementById('cadastroSucesso').textContent = sucesso;
+    formCadastro.reset();
+    // Salvar usuário logado e redirecionar
+    localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+    setTimeout(() => { window.location.href = tipoUsuario === 'gerente' ? 'index.html' : 'loja.html'; }, 1000);
+});
+
+// Mostrar/esconder campo código gerente
+const loginTipoCliente = document.getElementById('loginTipoCliente');
+const loginTipoGerente = document.getElementById('loginTipoGerente');
+const loginCodigoGerenteArea = document.getElementById('loginCodigoGerenteArea');
+[loginTipoCliente, loginTipoGerente].forEach(radio => {
+    radio.addEventListener('change', function() {
+        if (loginTipoGerente.checked) {
+            loginCodigoGerenteArea.style.display = '';
+        } else {
+            loginCodigoGerenteArea.style.display = 'none';
         }
-        .nav-tabs {
-            border-bottom: 2px solid #f7ca00;
+    });
+});
+
+// Login
+const formLogin = document.getElementById('formLogin');
+formLogin.addEventListener('submit', function(e) {
+    e.preventDefault();
+    let email = formLogin.loginEmail.value.trim().toLowerCase();
+    let senha = formLogin.loginSenha.value;
+    let erro = '';
+    let valido = true;
+    if (!email.match(/^\S+@\S+\.\S+$/)) { formLogin.loginEmail.classList.add('is-invalid'); valido = false; } else { formLogin.loginEmail.classList.remove('is-invalid'); }
+    if (!senha) { formLogin.loginSenha.classList.add('is-invalid'); valido = false; } else { formLogin.loginSenha.classList.remove('is-invalid'); }
+    if (!valido) return;
+    const tipoUsuario = loginTipoGerente.checked ? 'gerente' : 'cliente';
+    if (tipoUsuario === 'gerente') {
+        const codigo = document.getElementById('loginCodigoGerente').value.trim();
+        if (codigo !== 'GERENTE2025') {
+            document.getElementById('loginCodigoGerente').classList.add('is-invalid');
+            document.getElementById('loginErro').textContent = 'Código do gerente incorreto.';
+            return;
+        } else {
+            document.getElementById('loginCodigoGerente').classList.remove('is-invalid');
         }
-        .nav-tabs .nav-link.active {
-            background: #f7ca00;
-            color: #232f3e;
-            font-weight: 800;
-            border-radius: 12px 12px 0 0;
-            box-shadow: 0 2px 8px #f7ca0033;
-            border: none;
+    }
+    let usuario = usuarios.find(u => u.email === email && u.senha === senha);
+    if (!usuario) {
+        erro = 'E-mail ou senha inválidos.';
+        document.getElementById('loginErro').textContent = erro;
+        return;
+    }
+    document.getElementById('loginErro').textContent = '';
+    // Simular login (poderia salvar sessão)
+    localStorage.setItem('usuarioLogado', JSON.stringify({ ...usuario, tipoUsuario }));
+    window.location.href = 'index.html';
+});
+
+// Máscara automática para telefone
+const telInput = document.getElementById('cadastroTelefone');
+if (telInput) {
+    telInput.addEventListener('input', function(e) {
+        let v = this.value.replace(/\D/g, '');
+        if (v.length > 11) v = v.slice(0, 11);
+        if (v.length > 10) {
+            this.value = v.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+        } else if (v.length > 6) {
+            this.value = v.replace(/(\d{2})(\d{4,5})(\d{0,4})/, '($1) $2-$3');
+        } else if (v.length > 2) {
+            this.value = v.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+        } else {
+            this.value = v;
         }
-        .nav-tabs .nav-link {
-            color: #232f3e;
-            font-weight: 600;
-            border: none;
-            transition: background 0.2s;
+    });
+}
+
+// Máscara automática para CEP
+const cepInput = document.getElementById('cadastroCep');
+if (cepInput) {
+    cepInput.addEventListener('input', function(e) {
+        let v = this.value.replace(/\D/g, '');
+        if (v.length > 8) v = v.slice(0, 8);
+        if (v.length > 5) {
+            this.value = v.replace(/(\d{5})(\d{0,3})/, '$1-$2');
+        } else {
+            this.value = v;
         }
-        .form-group, .form-row {
-            margin-bottom: 0.7rem;
-        }
-        .form-control {
-            background: #fcfcfc;
-            border-radius: 7px;
-            border: 1.2px solid #e0e0e0;
-            font-size: 1.01rem;
-            padding: 0.38rem 0.7rem;
-            min-height: 36px;
-        }
-        .form-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        .form-group.col-md-6, .form-group.col-md-4 {
-            flex: 1 1 0;
-            min-width: 0;
-            margin-bottom: 0;
-        }
-        .form-group.col-md-6 {
-            max-width: 48%;
-        }
-        .form-group.col-md-4 {
-            max-width: 32%;
-        }
-        .btn-auth {
-            background: linear-gradient(90deg, #f7ca00 0%, #f90 100%);
-            color: #232f3e;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.15rem;
-            font-weight: 800;
-            padding: 0.7rem 2rem;
-            margin-top: 1.2rem;
-            box-shadow: 0 2px 12px #f7ca0033;
-            transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-        }
-        .btn-auth:hover {
-            background: linear-gradient(90deg, #f90 0%, #f7ca00 100%);
-            color: #232f3e;
-            box-shadow: 0 4px 18px #f7ca0033;
-            transform: translateY(-2px) scale(1.03);
-        }
-        .auth-logo {
-            width: 70px;
-            height: 70px;
-            background: #fff;
-            border-radius: 16px;
-            margin-bottom: 1.2rem;
-            box-shadow: 0 2px 12px #f7ca0033;
-        }
-        .tab-content {
-            margin-top: 1.7rem;
-        }
-        .invalid-feedback {
-            font-size: 0.98em;
-            color: #d7263d;
-        }
-        @media (max-width: 600px) {
-            .auth-card {
-                padding: 0.7rem 0.2rem 0.7rem 0.2rem;
-                max-width: 99vw;
-            }
-            .form-row {
-                flex-direction: column;
-                gap: 0.2rem;
-            }
-            .form-group.col-md-6, .form-group.col-md-4 {
-                max-width: 100%;
-                flex: 0 0 100%;
-            }
-        }
-        .btn-home-circle {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            box-shadow: 0 2px 8px #232f3e22;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            color: #232f3e;
-            background: #fff;
-            border: 1.5px solid #eee;
-            transition: background 0.18s, box-shadow 0.18s, color 0.18s;
-            margin-bottom: 10px;
-            overflow: hidden;
-        }
-        .animated-home-btn {
-            animation: homePulse 1.6s infinite alternate cubic-bezier(.4,0,.2,1);
-        }
-        @keyframes homePulse {
-            0% { transform: scale(1) translateY(0); box-shadow: 0 2px 8px #232f3e22; }
-            60% { transform: scale(1.08) translateY(-2px); box-shadow: 0 6px 18px #f7ca0033; }
-            100% { transform: scale(1) translateY(0); box-shadow: 0 2px 8px #232f3e22; }
-        }
-        .btn-home-circle:hover {
-            background: #f7ca00;
-            color: #232f3e;
-            box-shadow: 0 4px 16px #f7ca0033;
-            text-decoration: none;
-        }
-    </style>
-</head>
-<body>
-    <div class="decor-bg"></div>
-    <div class="auth-card mx-auto">
-        <div class="text-center">
-            <img src="BazaarPlus_logo_website.png" class="auth-logo" alt="Logo Bazaar+">
-            <h3 class="mb-3" style="color:#232f3e;font-weight:700;">Bazaar+ Acesso</h3>
-        </div>
-        <ul class="nav nav-tabs" id="authTabs" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="login-tab" data-toggle="tab" href="#login" role="tab" aria-controls="login" aria-selected="true">Login</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="cadastro-tab" data-toggle="tab" href="#cadastro" role="tab" aria-controls="cadastro" aria-selected="false">Cadastro</a>
-            </li>
-        </ul>
-        <div class="tab-content" id="authTabsContent">
-            <!-- Login -->
-            <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
-                <form id="formLogin" novalidate>
-                    <div class="form-group">
-                        <label for="loginEmail">E-mail</label>
-                        <input type="email" class="form-control" id="loginEmail" required>
-                        <div class="invalid-feedback">Informe um e-mail válido.</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="loginSenha">Senha</label>
-                        <input type="password" class="form-control" id="loginSenha" required minlength="4">
-                        <div class="invalid-feedback">Informe a senha.</div>
-                    </div>
-                    <div class="form-group">
-                        <label>Tipo de Usuário</label><br>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="loginTipoCliente" name="loginTipo" class="custom-control-input" value="cliente" checked>
-                            <label class="custom-control-label" for="loginTipoCliente">Cliente</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="loginTipoGerente" name="loginTipo" class="custom-control-input" value="gerente">
-                            <label class="custom-control-label" for="loginTipoGerente">Gerente</label>
-                        </div>
-                    </div>
-                    <div class="form-group" id="loginCodigoGerenteArea" style="display:none;">
-                        <label for="loginCodigoGerente">Código do Gerente</label>
-                        <input type="text" class="form-control" id="loginCodigoGerente" autocomplete="off">
-                        <div class="invalid-feedback">Informe o código correto do gerente.</div>
-                    </div>
-                    <button type="submit" class="btn btn-auth btn-block">Entrar</button>
-                    <div class="text-danger mt-2" id="loginErro"></div>
-                </form>
-            </div>
-            <!-- Cadastro -->
-            <div class="tab-pane fade" id="cadastro" role="tabpanel" aria-labelledby="cadastro-tab">
-                <form id="formCadastro" novalidate>
-                    <div class="form-group">
-                        <label for="cadastroNome">Nome</label>
-                        <input type="text" class="form-control" id="cadastroNome" required>
-                        <div class="invalid-feedback">Informe seu nome.</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="cadastroTelefone">Telefone</label>
-                        <input type="text" class="form-control" id="cadastroTelefone" required pattern="\(\d{2}\) \d{4,5}-\d{4}">
-                        <div class="invalid-feedback">Informe um telefone válido.</div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="cadastroCep">CEP</label>
-                            <input type="text" class="form-control" id="cadastroCep" required pattern="\d{5}-\d{3}">
-                            <div class="invalid-feedback">Informe um CEP válido.</div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="cadastroCasa">Casa/Apto</label>
-                            <input type="text" class="form-control" id="cadastroCasa" required>
-                            <div class="invalid-feedback">Informe o tipo de residência.</div>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label for="cadastroNumero">Número</label>
-                            <input type="text" class="form-control" id="cadastroNumero" required>
-                            <div class="invalid-feedback">Informe o número.</div>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="cadastroCidade">Cidade</label>
-                            <input type="text" class="form-control" id="cadastroCidade" required>
-                            <div class="invalid-feedback">Informe a cidade.</div>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="cadastroEstado">Estado</label>
-                            <input type="text" class="form-control" id="cadastroEstado" required>
-                            <div class="invalid-feedback">Informe o estado.</div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="cadastroPais">País</label>
-                        <input type="text" class="form-control" id="cadastroPais" required>
-                        <div class="invalid-feedback">Informe o país.</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="cadastroEmail">E-mail</label>
-                        <input type="email" class="form-control" id="cadastroEmail" required>
-                        <div class="invalid-feedback">Informe um e-mail válido.</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="cadastroSenha">Senha</label>
-                        <input type="password" class="form-control" id="cadastroSenha" required minlength="4">
-                        <div class="invalid-feedback">A senha deve ter pelo menos 4 caracteres.</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="cadastroSenha2">Confirme a Senha</label>
-                        <input type="password" class="form-control" id="cadastroSenha2" required minlength="4">
-                        <div class="invalid-feedback">As senhas não coincidem.</div>
-                    </div>
-                    <div class="form-group">
-                        <label>Tipo de Usuário</label><br>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="cadastroTipoCliente" name="cadastroTipo" class="custom-control-input" value="cliente" checked>
-                            <label class="custom-control-label" for="cadastroTipoCliente">Cliente</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="cadastroTipoGerente" name="cadastroTipo" class="custom-control-input" value="gerente">
-                            <label class="custom-control-label" for="cadastroTipoGerente">Gerente</label>
-                        </div>
-                    </div>
-                    <div class="form-group" id="cadastroCodigoGerenteArea" style="display:none;">
-                        <label for="cadastroCodigoGerente">Código do Gerente</label>
-                        <input type="text" class="form-control" id="cadastroCodigoGerente" autocomplete="off">
-                        <div class="invalid-feedback">Informe o código correto do gerente.</div>
-                    </div>
-                    <button type="submit" class="btn btn-auth btn-block">Cadastrar</button>
-                    <div class="text-danger mt-2" id="cadastroErro"></div>
-                    <div class="text-success mt-2" id="cadastroSucesso"></div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="text-center mt-3">
-        <a href="home.html" class="btn btn-light btn-home-circle animated-home-btn" title="Voltar para Home">
-            <img src="https://img.icons8.com/ios-filled/32/232f3e/home.png" alt="Home" style="width:28px;height:28px;">
-        </a>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="auth.js"></script>
-</body>
-</html> 
+    });
+} 
