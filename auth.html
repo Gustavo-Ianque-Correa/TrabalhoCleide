@@ -11,8 +11,8 @@
             background: linear-gradient(120deg, #f7ca00 0%, #f90 100%);
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            padding-bottom: 80px;
+            align-items: center;
+            justify-content: center;
             overflow-x: hidden;
         }
         .decor-bg {
@@ -34,7 +34,6 @@
             margin: 1.2rem auto;
             position: relative;
             z-index: 1;
-            flex: 1 0 auto;
         }
         .nav-tabs {
             border-bottom: 2px solid #f7ca00;
@@ -126,59 +125,6 @@
                 max-width: 100%;
                 flex: 0 0 100%;
             }
-        }
-        .footer-animado {
-            background: #f5f6fa !important;
-            color: #232f3e !important;
-            box-shadow: 0 -2px 16px #232f3e11;
-            padding: 22px 0 12px 0;
-            margin-top: auto;
-            border-top: 1px solid #ececec;
-        }
-        .footer-animado .footer-content {
-            position: relative;
-            z-index: 2;
-        }
-        .footer-animado .footer-link {
-            font-size: 1.01rem;
-            font-weight: 500;
-            letter-spacing: 1px;
-            opacity: 0.92;
-            transition: color 0.3s;
-        }
-        .footer-animado .footer-link:hover {
-            color: #f90;
-            opacity: 1;
-        }
-        .footer-animado .footer-social img {
-            transition: filter 0.3s;
-            filter: invert(0.4);
-        }
-        .footer-animado .footer-social:hover img {
-            filter: invert(0.2) brightness(1.2);
-        }
-        .footer-animado .footer-wave {
-            position: absolute;
-            top: -10px;
-            left: 0;
-            width: 100%;
-            height: 22px;
-            background: url('data:image/svg+xml;utf8,<svg width="100%25" height="22" viewBox="0 0 1200 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0C150 22 350 22 600 0C850 -22 1050 -22 1200 0V22H0V0Z" fill="%23f5f6fa"/></svg>') repeat-x;
-            z-index: 1;
-            animation: waveMove 14s linear infinite;
-            opacity: 0.7;
-        }
-        @keyframes waveMove {
-            0% { background-position-x: 0; }
-            100% { background-position-x: 1200px; }
-        }
-        @keyframes logoPulse {
-            0% { box-shadow: 0 0 0 0 #f7ca0022; }
-            100% { box-shadow: 0 0 8px 4px #f7ca0022; }
-        }
-        @keyframes fadeInUp {
-            0% { opacity: 0; transform: translateY(16px); }
-            100% { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -315,6 +261,9 @@
                 </form>
             </div>
         </div>
+    </div>
+    <div class="text-center mt-4">
+        <a href="home.html" class="btn btn-secondary">Voltar para Home</a>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
