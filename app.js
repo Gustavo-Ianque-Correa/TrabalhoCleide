@@ -264,224 +264,242 @@ window.onload = function() {
     exibirBannerAdmin();
 
     // Máscaras
-    document.getElementById('clienteCPF').addEventListener('input', function(e) {
-        this.value = mascaraCPF(this.value);
-    });
-    document.getElementById('clienteTelefone').addEventListener('input', function(e) {
-        this.value = mascaraTelefone(this.value);
-    });
-    document.getElementById('clienteCEP').addEventListener('input', function(e) {
-        this.value = mascaraCEP(this.value);
-    });
+    if (document.getElementById('clienteCPF')) {
+        document.getElementById('clienteCPF').addEventListener('input', function(e) {
+            this.value = mascaraCPF(this.value);
+        });
+    }
+    if (document.getElementById('clienteTelefone')) {
+        document.getElementById('clienteTelefone').addEventListener('input', function(e) {
+            this.value = mascaraTelefone(this.value);
+        });
+    }
+    if (document.getElementById('clienteCEP')) {
+        document.getElementById('clienteCEP').addEventListener('input', function(e) {
+            this.value = mascaraCEP(this.value);
+        });
+    }
 
     // Cadastro de Cliente
-    document.getElementById('formCliente').addEventListener('submit', function(e) {
-        e.preventDefault();
-        let form = this;
-        let nome = form.clienteNome.value.trim();
-        let telefone = form.clienteTelefone.value.trim();
-        let cpf = form.clienteCPF.value.trim();
-        let cep = form.clienteCEP.value.trim();
-        let endereco = form.clienteEndereco.value.trim();
-        let valido = true;
-        if (!nome) { form.clienteNome.classList.add('is-invalid'); valido = false; } else { form.clienteNome.classList.remove('is-invalid'); }
-        if (!telefone.match(/^\(\d{2}\) \d{4,5}-\d{4}$/)) { form.clienteTelefone.classList.add('is-invalid'); valido = false; } else { form.clienteTelefone.classList.remove('is-invalid'); }
-        if (!validarCPF(cpf)) { form.clienteCPF.classList.add('is-invalid'); valido = false; } else { form.clienteCPF.classList.remove('is-invalid'); }
-        if (!cep.match(/^\d{5}-\d{3}$/)) { form.clienteCEP.classList.add('is-invalid'); valido = false; } else { form.clienteCEP.classList.remove('is-invalid'); }
-        if (!endereco) { form.clienteEndereco.classList.add('is-invalid'); valido = false; } else { form.clienteEndereco.classList.remove('is-invalid'); }
-        if (!valido) return;
-        let novoCliente = {
-            id: Date.now(),
-            nome, telefone, cpf, cep, endereco
-        };
-        clientes.push(novoCliente);
-        salvarLocalStorage();
-        limparForm(form);
-        $('#modalMensagemBody').text('Cliente cadastrado com sucesso!');
-        $('#modalMensagem').modal('show');
-    });
+    if (document.getElementById('formCliente')) {
+        document.getElementById('formCliente').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let form = this;
+            let nome = form.clienteNome.value.trim();
+            let telefone = form.clienteTelefone.value.trim();
+            let cpf = form.clienteCPF.value.trim();
+            let cep = form.clienteCEP.value.trim();
+            let endereco = form.clienteEndereco.value.trim();
+            let valido = true;
+            if (!nome) { form.clienteNome.classList.add('is-invalid'); valido = false; } else { form.clienteNome.classList.remove('is-invalid'); }
+            if (!telefone.match(/^\(\d{2}\) \d{4,5}-\d{4}$/)) { form.clienteTelefone.classList.add('is-invalid'); valido = false; } else { form.clienteTelefone.classList.remove('is-invalid'); }
+            if (!validarCPF(cpf)) { form.clienteCPF.classList.add('is-invalid'); valido = false; } else { form.clienteCPF.classList.remove('is-invalid'); }
+            if (!cep.match(/^\d{5}-\d{3}$/)) { form.clienteCEP.classList.add('is-invalid'); valido = false; } else { form.clienteCEP.classList.remove('is-invalid'); }
+            if (!endereco) { form.clienteEndereco.classList.add('is-invalid'); valido = false; } else { form.clienteEndereco.classList.remove('is-invalid'); }
+            if (!valido) return;
+            let novoCliente = {
+                id: Date.now(),
+                nome, telefone, cpf, cep, endereco
+            };
+            clientes.push(novoCliente);
+            salvarLocalStorage();
+            limparForm(form);
+            $('#modalMensagemBody').text('Cliente cadastrado com sucesso!');
+            $('#modalMensagem').modal('show');
+        });
+    }
 
     // Cadastro de Produto/Serviço
-    document.getElementById('formProduto').addEventListener('submit', function(e) {
-        e.preventDefault();
-        let form = this;
-        let nome = form.produtoNome.value.trim();
-        let descricao = form.produtoDescricao.value.trim();
-        let valor = form.produtoValor.value;
-        let tipo = form.produtoTipo.value;
-        let estoque = form.produtoEstoque.value;
-        let fornecedorId = form.produtoFornecedor.value;
-        let categoriaId = form.produtoCategoria.value;
-        let imagemInput = form.produtoImagem;
-        let promocao = form.produtoPromocao.value;
-        let desconto = form.produtoDesconto.value;
-        let valido = true;
-        if (!nome) { form.produtoNome.classList.add('is-invalid'); valido = false; } else { form.produtoNome.classList.remove('is-invalid'); }
-        if (!descricao) { form.produtoDescricao.classList.add('is-invalid'); valido = false; } else { form.produtoDescricao.classList.remove('is-invalid'); }
-        if (!valor || valor <= 0) { form.produtoValor.classList.add('is-invalid'); valido = false; } else { form.produtoValor.classList.remove('is-invalid'); }
-        if (!tipo) { form.produtoTipo.classList.add('is-invalid'); valido = false; } else { form.produtoTipo.classList.remove('is-invalid'); }
-        if (estoque === '' || estoque < 0) { form.produtoEstoque.classList.add('is-invalid'); valido = false; } else { form.produtoEstoque.classList.remove('is-invalid'); }
-        if (!fornecedorId) { form.produtoFornecedor.classList.add('is-invalid'); valido = false; } else { form.produtoFornecedor.classList.remove('is-invalid'); }
-        if (!categoriaId) { form.produtoCategoria.classList.add('is-invalid'); valido = false; } else { form.produtoCategoria.classList.remove('is-invalid'); }
-        if (!valido) return;
-        // Função para salvar produto após processar imagem
-        function salvarProduto(imagemBase64) {
-            let valorNum = parseFloat(valor);
-            let promocaoNum = promocao ? parseFloat(promocao) : null;
-            let descontoNum = desconto ? parseFloat(desconto) : null;
-            // Se desconto preenchido, calcular valor promocional
-            if (descontoNum && descontoNum > 0) {
-                promocaoNum = (valorNum * (1 - descontoNum / 100)).toFixed(2);
-                promocaoNum = parseFloat(promocaoNum);
+    if (document.getElementById('formProduto')) {
+        document.getElementById('formProduto').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let form = this;
+            let nome = form.produtoNome.value.trim();
+            let descricao = form.produtoDescricao.value.trim();
+            let valor = form.produtoValor.value;
+            let tipo = form.produtoTipo.value;
+            let estoque = form.produtoEstoque.value;
+            let fornecedorId = form.produtoFornecedor.value;
+            let categoriaId = form.produtoCategoria.value;
+            let imagemInput = form.produtoImagem;
+            let promocao = form.produtoPromocao.value;
+            let desconto = form.produtoDesconto.value;
+            let valido = true;
+            if (!nome) { form.produtoNome.classList.add('is-invalid'); valido = false; } else { form.produtoNome.classList.remove('is-invalid'); }
+            if (!descricao) { form.produtoDescricao.classList.add('is-invalid'); valido = false; } else { form.produtoDescricao.classList.remove('is-invalid'); }
+            if (!valor || valor <= 0) { form.produtoValor.classList.add('is-invalid'); valido = false; } else { form.produtoValor.classList.remove('is-invalid'); }
+            if (!tipo) { form.produtoTipo.classList.add('is-invalid'); valido = false; } else { form.produtoTipo.classList.remove('is-invalid'); }
+            if (estoque === '' || estoque < 0) { form.produtoEstoque.classList.add('is-invalid'); valido = false; } else { form.produtoEstoque.classList.remove('is-invalid'); }
+            if (!fornecedorId) { form.produtoFornecedor.classList.add('is-invalid'); valido = false; } else { form.produtoFornecedor.classList.remove('is-invalid'); }
+            if (!categoriaId) { form.produtoCategoria.classList.add('is-invalid'); valido = false; } else { form.produtoCategoria.classList.remove('is-invalid'); }
+            if (!valido) return;
+            // Função para salvar produto após processar imagem
+            function salvarProduto(imagemBase64) {
+                let valorNum = parseFloat(valor);
+                let promocaoNum = promocao ? parseFloat(promocao) : null;
+                let descontoNum = desconto ? parseFloat(desconto) : null;
+                // Se desconto preenchido, calcular valor promocional
+                if (descontoNum && descontoNum > 0) {
+                    promocaoNum = (valorNum * (1 - descontoNum / 100)).toFixed(2);
+                    promocaoNum = parseFloat(promocaoNum);
+                }
+                let novoProduto = {
+                    id: Date.now(),
+                    nome,
+                    descricao,
+                    valor: valorNum,
+                    promocao: promocaoNum,
+                    desconto: descontoNum,
+                    tipo,
+                    estoque: parseInt(estoque),
+                    fornecedorId: parseInt(fornecedorId),
+                    categoriaId: parseInt(categoriaId),
+                    imagem: imagemBase64 || null
+                };
+                produtos.push(novoProduto);
+                salvarLocalStorage();
+                atualizarTabelaProdutos();
+                limparForm(form);
+                $('#modalMensagemBody').text('Produto/Serviço cadastrado com sucesso!');
+                $('#modalMensagem').modal('show');
             }
-            let novoProduto = {
-                id: Date.now(),
-                nome,
-                descricao,
-                valor: valorNum,
-                promocao: promocaoNum,
-                desconto: descontoNum,
-                tipo,
-                estoque: parseInt(estoque),
-                fornecedorId: parseInt(fornecedorId),
-                categoriaId: parseInt(categoriaId),
-                imagem: imagemBase64 || null
-            };
-            produtos.push(novoProduto);
-            salvarLocalStorage();
-            atualizarTabelaProdutos();
-            limparForm(form);
-            $('#modalMensagemBody').text('Produto/Serviço cadastrado com sucesso!');
-            $('#modalMensagem').modal('show');
-        }
-        // Se houver imagem, ler como base64
-        if (imagemInput && imagemInput.files && imagemInput.files[0]) {
-            let file = imagemInput.files[0];
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                salvarProduto(e.target.result);
-            };
-            reader.readAsDataURL(file);
-        } else {
-            salvarProduto(null);
-        }
-    });
+            // Se houver imagem, ler como base64
+            if (imagemInput && imagemInput.files && imagemInput.files[0]) {
+                let file = imagemInput.files[0];
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    salvarProduto(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                salvarProduto(null);
+            }
+        });
+    }
 
     // Cadastro de Banner
-    document.getElementById('formBanner').addEventListener('submit', function(e) {
-        e.preventDefault();
-        let form = this;
-        let titulo = form.bannerTituloInput.value.trim();
-        let descricao = form.bannerDescricaoInput.value.trim();
-        let imgInput = form.bannerImgInput;
-        let valido = true;
-        if (!titulo) { form.bannerTituloInput.classList.add('is-invalid'); valido = false; } else { form.bannerTituloInput.classList.remove('is-invalid'); }
-        if (!descricao) { form.bannerDescricaoInput.classList.add('is-invalid'); valido = false; } else { form.bannerDescricaoInput.classList.remove('is-invalid'); }
-        if (!imgInput.files || !imgInput.files[0]) { form.bannerImgInput.classList.add('is-invalid'); valido = false; } else { form.bannerImgInput.classList.remove('is-invalid'); }
-        if (!valido) return;
-        let file = imgInput.files[0];
-        let reader = new FileReader();
-        reader.onload = function(e) {
-            let banner = { titulo, descricao, imagem: e.target.result };
-            localStorage.setItem('bannerPromo', JSON.stringify(banner));
-            exibirBanner();
-            exibirBannerAdmin();
-            form.reset();
-            $('#modalMensagemBody').text('Banner cadastrado com sucesso!');
-            $('#modalMensagem').modal('show');
-        };
-        reader.readAsDataURL(file);
-    });
-
-    // Cadastro de Fornecedor
-    document.getElementById('formFornecedor').addEventListener('submit', function(e) {
-        e.preventDefault();
-        let form = this;
-        let nome = form.fornecedorNome.value.trim();
-        let valido = true;
-        if (!nome) { form.fornecedorNome.classList.add('is-invalid'); valido = false; } else { form.fornecedorNome.classList.remove('is-invalid'); }
-        if (!valido) return;
-        let novoFornecedor = { id: Date.now(), nome };
-        fornecedores.push(novoFornecedor);
-        localStorage.setItem('fornecedores', JSON.stringify(fornecedores));
-        preencherFornecedores();
-        atualizarTabelaFornecedores();
-        limparForm(form);
-        $('#modalMensagemBody').text('Fornecedor cadastrado com sucesso!');
-        $('#modalMensagem').modal('show');
-    });
-
-    // Cadastro de Categoria
-    document.getElementById('formCategoria').addEventListener('submit', function(e) {
-        e.preventDefault();
-        let form = this;
-        let nome = form.categoriaNome.value.trim();
-        let valido = true;
-        if (!nome) { form.categoriaNome.classList.add('is-invalid'); valido = false; } else { form.categoriaNome.classList.remove('is-invalid'); }
-        if (!valido) return;
-        let novaCategoria = { id: Date.now(), nome };
-        categorias.push(novaCategoria);
-        localStorage.setItem('categorias', JSON.stringify(categorias));
-        atualizarTabelaCategorias();
-        limparForm(form);
-        $('#modalMensagemBody').text('Categoria cadastrada com sucesso!');
-        $('#modalMensagem').modal('show');
-    });
-
-    // Edição de produto
-    document.getElementById('formEditarProduto').addEventListener('submit', function(e) {
-        e.preventDefault();
-        let form = this;
-        let id = form.editarProdutoId.value;
-        let nome = form.editarProdutoNome.value.trim();
-        let descricao = form.editarProdutoDescricao.value.trim();
-        let valor = form.editarProdutoValor.value;
-        let tipo = form.editarProdutoTipo.value;
-        let estoque = form.editarProdutoEstoque.value;
-        let fornecedorId = form.editarProdutoFornecedor.value;
-        let categoriaId = form.editarProdutoCategoria.value;
-        let promocao = form.editarProdutoPromocao.value;
-        let desconto = form.editarProdutoDesconto.value;
-        let imagemInput = form.editarProdutoImagem;
-        let valido = true;
-        if (!nome) { form.editarProdutoNome.classList.add('is-invalid'); valido = false; } else { form.editarProdutoNome.classList.remove('is-invalid'); }
-        if (!descricao) { form.editarProdutoDescricao.classList.add('is-invalid'); valido = false; } else { form.editarProdutoDescricao.classList.remove('is-invalid'); }
-        if (!valor || valor <= 0) { form.editarProdutoValor.classList.add('is-invalid'); valido = false; } else { form.editarProdutoValor.classList.remove('is-invalid'); }
-        if (!tipo) { form.editarProdutoTipo.classList.add('is-invalid'); valido = false; } else { form.editarProdutoTipo.classList.remove('is-invalid'); }
-        if (estoque === '' || estoque < 0) { form.editarProdutoEstoque.classList.add('is-invalid'); valido = false; } else { form.editarProdutoEstoque.classList.remove('is-invalid'); }
-        if (!fornecedorId) { form.editarProdutoFornecedor.classList.add('is-invalid'); valido = false; } else { form.editarProdutoFornecedor.classList.remove('is-invalid'); }
-        if (!categoriaId) { form.editarProdutoCategoria.classList.add('is-invalid'); valido = false; } else { form.editarProdutoCategoria.classList.remove('is-invalid'); }
-        if (!valido) return;
-        function salvarEdicao(imagemBase64) {
-            let prod = produtos.find(p => p.id == id);
-            if (!prod) return;
-            prod.nome = nome;
-            prod.descricao = descricao;
-            prod.valor = parseFloat(valor);
-            prod.tipo = tipo;
-            prod.estoque = parseInt(estoque);
-            prod.fornecedorId = parseInt(fornecedorId);
-            prod.categoriaId = parseInt(categoriaId);
-            prod.promocao = promocao ? parseFloat(promocao) : null;
-            prod.desconto = desconto ? parseFloat(desconto) : null;
-            if (imagemBase64) prod.imagem = imagemBase64;
-            salvarLocalStorage();
-            atualizarTabelaProdutos();
-            $('#modalEditarProduto').modal('hide');
-            $('#modalMensagemBody').text('Produto/Serviço alterado com sucesso!');
-            $('#modalMensagem').modal('show');
-        }
-        if (imagemInput && imagemInput.files && imagemInput.files[0]) {
-            let file = imagemInput.files[0];
+    if (document.getElementById('formBanner')) {
+        document.getElementById('formBanner').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let form = this;
+            let titulo = form.bannerTituloInput.value.trim();
+            let descricao = form.bannerDescricaoInput.value.trim();
+            let imgInput = form.bannerImgInput;
+            let valido = true;
+            if (!titulo) { form.bannerTituloInput.classList.add('is-invalid'); valido = false; } else { form.bannerTituloInput.classList.remove('is-invalid'); }
+            if (!descricao) { form.bannerDescricaoInput.classList.add('is-invalid'); valido = false; } else { form.bannerDescricaoInput.classList.remove('is-invalid'); }
+            if (!imgInput.files || !imgInput.files[0]) { form.bannerImgInput.classList.add('is-invalid'); valido = false; } else { form.bannerImgInput.classList.remove('is-invalid'); }
+            if (!valido) return;
+            let file = imgInput.files[0];
             let reader = new FileReader();
             reader.onload = function(e) {
-                salvarEdicao(e.target.result);
+                let banner = { titulo, descricao, imagem: e.target.result };
+                localStorage.setItem('bannerPromo', JSON.stringify(banner));
+                exibirBanner();
+                exibirBannerAdmin();
+                form.reset();
+                $('#modalMensagemBody').text('Banner cadastrado com sucesso!');
+                $('#modalMensagem').modal('show');
             };
             reader.readAsDataURL(file);
-        } else {
-            salvarEdicao();
-        }
-    });
+        });
+    }
+
+    // Cadastro de Fornecedor
+    if (document.getElementById('formFornecedor')) {
+        document.getElementById('formFornecedor').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let form = this;
+            let nome = form.fornecedorNome.value.trim();
+            let valido = true;
+            if (!nome) { form.fornecedorNome.classList.add('is-invalid'); valido = false; } else { form.fornecedorNome.classList.remove('is-invalid'); }
+            if (!valido) return;
+            let novoFornecedor = { id: Date.now(), nome };
+            fornecedores.push(novoFornecedor);
+            localStorage.setItem('fornecedores', JSON.stringify(fornecedores));
+            preencherFornecedores();
+            atualizarTabelaFornecedores();
+            limparForm(form);
+            $('#modalMensagemBody').text('Fornecedor cadastrado com sucesso!');
+            $('#modalMensagem').modal('show');
+        });
+    }
+
+    // Cadastro de Categoria
+    if (document.getElementById('formCategoria')) {
+        document.getElementById('formCategoria').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let form = this;
+            let nome = form.categoriaNome.value.trim();
+            let valido = true;
+            if (!nome) { form.categoriaNome.classList.add('is-invalid'); valido = false; } else { form.categoriaNome.classList.remove('is-invalid'); }
+            if (!valido) return;
+            let novaCategoria = { id: Date.now(), nome };
+            categorias.push(novaCategoria);
+            localStorage.setItem('categorias', JSON.stringify(categorias));
+            atualizarTabelaCategorias();
+            limparForm(form);
+            $('#modalMensagemBody').text('Categoria cadastrada com sucesso!');
+            $('#modalMensagem').modal('show');
+        });
+    }
+
+    // Edição de produto
+    if (document.getElementById('formEditarProduto')) {
+        document.getElementById('formEditarProduto').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let form = this;
+            let id = form.editarProdutoId.value;
+            let nome = form.editarProdutoNome.value.trim();
+            let descricao = form.editarProdutoDescricao.value.trim();
+            let valor = form.editarProdutoValor.value;
+            let tipo = form.editarProdutoTipo.value;
+            let estoque = form.editarProdutoEstoque.value;
+            let fornecedorId = form.editarProdutoFornecedor.value;
+            let categoriaId = form.editarProdutoCategoria.value;
+            let promocao = form.editarProdutoPromocao.value;
+            let desconto = form.editarProdutoDesconto.value;
+            let imagemInput = form.editarProdutoImagem;
+            let valido = true;
+            if (!nome) { form.editarProdutoNome.classList.add('is-invalid'); valido = false; } else { form.editarProdutoNome.classList.remove('is-invalid'); }
+            if (!descricao) { form.editarProdutoDescricao.classList.add('is-invalid'); valido = false; } else { form.editarProdutoDescricao.classList.remove('is-invalid'); }
+            if (!valor || valor <= 0) { form.editarProdutoValor.classList.add('is-invalid'); valido = false; } else { form.editarProdutoValor.classList.remove('is-invalid'); }
+            if (!tipo) { form.editarProdutoTipo.classList.add('is-invalid'); valido = false; } else { form.editarProdutoTipo.classList.remove('is-invalid'); }
+            if (estoque === '' || estoque < 0) { form.editarProdutoEstoque.classList.add('is-invalid'); valido = false; } else { form.editarProdutoEstoque.classList.remove('is-invalid'); }
+            if (!fornecedorId) { form.editarProdutoFornecedor.classList.add('is-invalid'); valido = false; } else { form.editarProdutoFornecedor.classList.remove('is-invalid'); }
+            if (!categoriaId) { form.editarProdutoCategoria.classList.add('is-invalid'); valido = false; } else { form.editarProdutoCategoria.classList.remove('is-invalid'); }
+            if (!valido) return;
+            function salvarEdicao(imagemBase64) {
+                let prod = produtos.find(p => p.id == id);
+                if (!prod) return;
+                prod.nome = nome;
+                prod.descricao = descricao;
+                prod.valor = parseFloat(valor);
+                prod.tipo = tipo;
+                prod.estoque = parseInt(estoque);
+                prod.fornecedorId = parseInt(fornecedorId);
+                prod.categoriaId = parseInt(categoriaId);
+                prod.promocao = promocao ? parseFloat(promocao) : null;
+                prod.desconto = desconto ? parseFloat(desconto) : null;
+                if (imagemBase64) prod.imagem = imagemBase64;
+                salvarLocalStorage();
+                atualizarTabelaProdutos();
+                $('#modalEditarProduto').modal('hide');
+                $('#modalMensagemBody').text('Produto/Serviço alterado com sucesso!');
+                $('#modalMensagem').modal('show');
+            }
+            if (imagemInput && imagemInput.files && imagemInput.files[0]) {
+                let file = imagemInput.files[0];
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    salvarEdicao(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                salvarEdicao();
+            }
+        });
+    }
 
     // Edição de Banner
     const btnEditarBanner = document.getElementById('btnEditarBanner');
